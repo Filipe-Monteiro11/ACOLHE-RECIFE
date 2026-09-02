@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from talisman import Talisman
+from flask_talisman import Talisman
 from classes.usuario import Usuario
 from classes.instituicao import Instituicao
 
