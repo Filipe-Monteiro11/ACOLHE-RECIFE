@@ -1,11 +1,6 @@
 -- ============================================================
 -- Acolhe Recife — Banco de Dados
 -- PostgreSQL (pgAdmin)
--- Como usar:
--- 1. Abra o pgAdmin e conecte no servidor local
--- 2. Crie um banco chamado "acolhe_recife"
--- 3. Abra o Query Tool nesse banco
--- 4. Cole este script inteiro e aperte F5
 -- ============================================================
 
 -- Limpa tudo caso já exista
