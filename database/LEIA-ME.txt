@@ -1,0 +1,28 @@
+============================================================
+BANCO DE DADOS — ACOLHE RECIFE
+============================================================
+
+PRÉ-REQUISITOS:
+- Instalar PostgreSQL (https://www.postgresql.org/download/)
+- O pgAdmin vem junto na instalação
+
+PASSO A PASSO:
+
+1. Abra o pgAdmin
+2. Conecte no servidor local (localhost) com a senha definida na instalação
+3. Clique com botão direito em "Databases" → Create Database
+4. Nome do banco: acolhe_recife → clique em Save
+5. Clique com botão direito no banco acolhe_recife → Query Tool
+6. Clique em "Open File" (ícone de pasta) e selecione o arquivo schema.sql desta pasta
+7. Aperte F5 para executar
+
+PRONTO! O banco estará criado com:
+- 5 tabelas (instituicoes, usuarios, servicos, necessidades, horarios)
+- Dados de teste (3 instituições, 8 serviços, 8 necessidades, 19 horários)
+
+DADOS DE ACESSO DO BANCO (para o backend):
+- Host: localhost
+- Porta: 5432
+- Banco: acolhe_recife
+- Usuário: postgres
+- Senha: [a que você definiu na instalação]
