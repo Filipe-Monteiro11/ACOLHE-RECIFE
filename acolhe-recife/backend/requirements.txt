@@ -4,3 +4,6 @@ flask-cors
 bcrypt
 python-dotenv
 PyJWT
+Flask-Limiter
+flask-talisman
+bleach
