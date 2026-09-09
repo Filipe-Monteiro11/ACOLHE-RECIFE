@@ -1,4 +1,5 @@
-import psycopg2
+import mysql.connector
+import os
 
 class Conexao:
     _instance = None
@@ -10,23 +11,25 @@ class Conexao:
         return cls._instance
 
     def _conectar(self):
-        self.conn = psycopg2.connect(
-            host='localhost',
-            port='5432',
-            dbname='acolhe_recife',
-            user='postgres',
-            password='123456'
+        self.conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST', 'localhost'),
+            port=int(os.getenv('DB_PORT', '3306')),
+            database=os.getenv('DB_NAME', 'acolhe_recife'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', '123456')
         )
         self.conn.autocommit = True
 
     def executar(self, sql, params=None):
         try:
-            with self.conn.cursor() as cursor:
+            with self.conn.cursor(dictionary=True) as cursor:
                 cursor.execute(sql, params)
                 if cursor.description:
-                    colunas = [desc[0] for desc in cursor.description]
                     resultados = cursor.fetchall()
-                    return [dict(zip(colunas, linha)) for linha in resultados]
+                    return resultados
+                # Para INSERT, retorna o último ID inserido
+                if cursor.lastrowid > 0:
+                    return [{'id': cursor.lastrowid}]
                 return None
         except Exception as e:
             print(f"Erro SQL: {e}")

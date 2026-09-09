@@ -1,5 +1,5 @@
 Flask
-psycopg2-binary
+mysql-connector-python
 flask-cors
 bcrypt
 python-dotenv
