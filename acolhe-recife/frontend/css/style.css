@@ -1,0 +1,551 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #071a45;
+    background: #ffffff;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* ================= HEADER ================= */
+
+.header {
+    height: 92px;
+    display: flex;
+    align-items: center;
+    padding: 0 4.5%;
+    gap: 40px;
+    background: white;
+}
+
+.logo img {
+    width: 175px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    flex: 1;
+}
+
+.menu a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #071a45;
+    padding: 34px 0;
+}
+
+.menu a:hover,
+.menu .active {
+    color: #1649b5;
+}
+
+.menu .active {
+    border-bottom: 2px solid #1649b5;
+}
+
+.btn-instituicao {
+    background: #1548b8;
+    color: white;
+    padding: 17px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ================= HERO ================= */
+
+.hero {
+    min-height: 430px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,1) 0%,
+            rgba(255,255,255,.95) 25%,
+            rgba(255,255,255,.3) 50%,
+            rgba(255,255,255,0) 70%
+        ),
+        url("img/recife.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    display: flex;
+    align-items: center;
+
+    padding-left: 4.5%;
+}
+
+.hero-content {
+    max-width: 530px;
+}
+
+.hero h1 {
+    color: #1548b8;
+    font-size: 48px;
+    line-height: 1.08;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 19px;
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 18px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 17px 38px;
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #1548b8;
+    color: white;
+}
+
+.btn-secondary {
+    background: white;
+    color: #1548b8;
+    border: 2px solid #1548b8;
+}
+
+
+/* ================= BUSCA ================= */
+
+.search-box {
+    background: white;
+
+    width: 72%;
+
+    margin: -35px auto 25px;
+
+    position: relative;
+
+    padding: 20px 45px 28px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, .10);
+    
+}
+
+.search-box h2 {
+    text-align: center;
+    color: #1548b8;
+    margin-bottom: 18px;
+   
+}
+
+.search-form {
+    display: grid;
+
+    grid-template-columns:
+        1.8fr
+        .8fr
+        .9fr
+        .65fr;
+
+    gap: 22px;
+
+    
+}
+
+.input-search,
+.search-form select {
+    height: 48px;
+
+    border: 1px solid #d7dce7;
+    border-radius: 8px;
+    padding: 0 40px 0 15px;
+
+
+    background: white;
+  
+
+    
+}
+
+.input-search {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    gap: 12px;
+}
+
+.input-search i {
+    color: #60708d;
+}
+
+.input-search input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+.search-form select {
+    color: #58657d;
+    padding: 0 40px 0 15px;
+}
+
+.btn-search {
+
+    padding: 12px 30px;
+    height: 45px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+
+
+    background: #1548b8;
+    color: white;
+
+    font-weight: bold;
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+
+/* ================= BENEFÍCIOS ================= */
+
+.benefits {
+    width: 91%;
+    margin: 20px auto;
+
+    background: #f1f6fd;
+
+    border-radius: 12px;
+
+    padding: 28px 35px;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.benefit {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.benefit-icon {
+    min-width: 72px;
+    height: 72px;
+
+    border: 2px solid #1551c4;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1551c4;
+    font-size: 27px;
+}
+
+.benefit h3 {
+    color: #1548b8;
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+.benefit p {
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* ================= INSTITUIÇÕES ================= */
+
+.institutions {
+    width: 91%;
+    margin: 25px auto 60px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.section-header h2 {
+    color: #1548b8;
+}
+
+.section-header a {
+    color: #1548b8;
+    font-weight: bold;
+
+    display: flex;
+    gap: 10px;
+}
+
+.institution-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.institution-card {
+    border: 1px solid #e1e5ec;
+    border-radius: 12px;
+    overflow: hidden;
+
+    background: white;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.institution-card > img {
+    width: 100%;
+    height: 145px;
+    object-fit: cover;
+}
+
+.institution-info {
+    padding: 14px;
+}
+
+.status {
+    display: inline-block;
+
+    font-size: 11px;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    margin-bottom: 8px;
+}
+
+.available {
+    color: #16834c;
+    border: 1px solid #8bd5af;
+}
+
+.limited {
+    color: #c87800;
+    border: 1px solid #e7bd71;
+}
+
+.unavailable {
+    color: #c73434;
+    border: 1px solid #e49a9a;
+}
+
+.unknown {
+    color: #777;
+    border: 1px solid #ccc;
+}
+
+.institution-info h3 {
+    color: #1548b8;
+    font-size: 15px;
+    margin-bottom: 9px;
+}
+
+.institution-info p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.location {
+    color: #52617c;
+}
+
+.location i {
+    color: #1548b8;
+}
+
+.institution-info a {
+    color: #1548b8;
+    font-weight: bold;
+    font-size: 12px;
+
+    display: flex;
+    gap: 8px;
+}
+
+
+/* ================= FOOTER ================= */
+
+footer {
+    background: #071a45;
+    color: white;
+    padding: 45px 5% 20px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+    gap: 60px;
+}
+
+.footer-content img {
+    width: 160px;
+    margin-bottom: 15px;
+}
+
+.footer-content h3 {
+    margin-bottom: 15px;
+}
+
+.footer-content a {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.footer-content p {
+    line-height: 1.6;
+}
+
+.copyright {
+    border-top: 1px solid rgba(255,255,255,.2);
+
+    margin-top: 35px;
+    padding-top: 20px;
+
+    text-align: center;
+    font-size: 13px;
+}
+
+
+/* ================= RESPONSIVIDADE ================= */
+
+@media (max-width: 1000px) {
+
+    .menu {
+        gap: 18px;
+    }
+
+    .benefits {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .institution-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .header {
+        height: auto;
+        padding: 20px;
+        flex-wrap: wrap;
+    }
+
+    .menu {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .menu a {
+        padding: 10px 0;
+        white-space: nowrap;
+    }
+
+    .btn-instituicao {
+        margin-left: auto;
+    }
+
+    .hero {
+        padding: 50px 25px;
+        min-height: 500px;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 90%;
+    }
+
+    .search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .benefits {
+        grid-template-columns: 1fr;
+    }
+
+    .institution-list {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-primary {
+    background: #1548b8;
+    color: white;
+}
+
+.btn-secondary {
+    background: white;
+    color: #1548b8;
+    border: 2px solid #1548b8;
+}
+
+.btn-detalhes {
+    color: #1548b8;
+}
+
+/* Efeito ao passar o mouse */
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-instituicao:hover,
+.btn-search:hover,
+.btn-detalhes:hover {
+    background-color: #159447;
+    color: white;
+    border-color: #159447;
+}
