@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#063da8">
+  <meta name="description" content="Acolhe Recife: encontre instituições de acolhimento, serviços de assistência e formas de ajudar no Recife.">
+
+  <title>ABRICIFE | Acolhe Recife</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="js/main.js" defer></script>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-container">
+
+      <a href="index.html" class="logo" aria-label="Acolhe Recife - Início">
+        <img src="assets/img/logo.png" alt="Acolhe Recife">
+      </a>
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <nav class="menu" id="menu" aria-label="Navegação principal">
+        <a href="index.html" class="active" aria-current="page">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html">Quero ajudar</a>
+        <a href="instituicoes.html">Instituições</a>
+        <a href="sobre.html">Sobre o projeto</a>
+      </nav>
+
+      <a href="area-instituicao.html" class="btn-instituicao">
+        <i class="fa-solid fa-building-columns"></i>
+        <span>Área da instituição</span>
+      </a>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+
+        <h1>
+          Acolhimento<br>
+          que aproxima.<br>
+          Ajuda que transforma.
+        </h1>
+
+        <p>
+          Encontre serviços de acolhimento no Recife
+          ou descubra como você pode ajudar
+          quem precisa.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="preciso-ajuda.html" class="btn-primary">
+            <i class="fa-regular fa-heart"></i>
+            Preciso de ajuda
+          </a>
+
+          <a href="quero-ajudar.html" class="btn-secondary">
+            <i class="fa-solid fa-hands-holding-child"></i>
+            Quero ajudar
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BUSCA -->
+    <section class="search-box" aria-labelledby="search-title">
+      <h2 id="search-title">O que você está procurando?</h2>
+
+      <form class="search-form" id="search-form">
+
+        <div class="input-search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+
+          <input
+            type="search"
+            id="search-name"
+            name="nome"
+            placeholder="Nome da instituição"
+            aria-label="Nome da instituição"
+          >
+        </div>
+
+        <select id="search-region" name="regiao" aria-label="Região">
+          <option value="">Todas as regiões</option>
+          <option value="Boa Vista">Boa Vista</option>
+          <option value="Santo Amaro">Santo Amaro</option>
+          <option value="Imbiribeira">Imbiribeira</option>
+          <option value="Cordeiro">Cordeiro</option>
+        </select>
+
+        <select id="search-service" name="servico" aria-label="Tipo de serviço">
+          <option value="">Tipo de serviço</option>
+          <option value="Acolhimento">Acolhimento</option>
+          <option value="Alimentação">Alimentação</option>
+          <option value="Higiene">Higiene</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Psicossocial">Psicossocial</option>
+          <option value="Oficinas">Oficinas</option>
+        </select>
+
+        <button type="submit" class="btn-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Buscar
+        </button>
+
+      </form>
+    </section>
+
+    <!-- BENEFÍCIOS -->
+    <section class="benefits" aria-label="Como podemos ajudar">
+
+      <article class="benefit">
+        <div class="benefit-icon">
+          <i class="fa-solid fa-house"></i>
+        </div>
+
+        <div>
+          <h3>Encontre ajuda</h3>
+          <p>
+            Encontre instituições e serviços de
+            acolhimento perto de você.
+          </p>
+        </div>
+      </article>
+
+      <article class="benefit">
+        <div class="benefit-icon">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+        </div>
+
+        <div>
+          <h3>Serviços e informações</h3>
+          <p>
+            Consulte serviços oferecidos,
+            disponibilidade, endereço
+            e formas de contato.
+          </p>
+        </div>
+      </article>
+
+      <article class="benefit">
+        <div class="benefit-icon">
+          <i class="fa-solid fa-users"></i>
+        </div>
+
+        <div>
+          <h3>Conectando pessoas</h3>
+          <p>
+            Unimos quem precisa de ajuda com
+            instituições que acolhem e
+            transformam vidas.
+          </p>
+        </div>
+      </article>
+
+      <article class="benefit">
+        <div class="benefit-icon">
+          <i class="fa-solid fa-hands-holding-circle"></i>
+        </div>
+
+        <div>
+          <h3>Quero ajudar</h3>
+          <p>
+            Descubra como você pode doar,
+            contribuir e fazer a diferença.
+          </p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- INSTITUIÇÕES -->
+    <section class="institutions" id="instituicoes">
+
+      <div class="section-header">
+        <div>
+          <span class="section-label">REDE DE ACOLHIMENTO</span>
+          <h2>Instituições em destaque</h2>
+        </div>
+
+        <a href="instituicoes.html" class="see-all">
+          Ver todas
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <p class="search-feedback" id="search-feedback" role="status" aria-live="polite"></p>
+
+      <div class="institution-list" id="lista-instituicoes">
+        <p class="loading-message">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          Carregando instituições...
+        </p>
+      </div>
+
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="how-it-works">
+
+      <div class="how-content">
+        <h2>Como o Acolhe Recife funciona</h2>
+
+        <div class="steps">
+
+          <article class="step">
+            <div class="step-icon">
+              <i class="fa-solid fa-hands-holding-circle"></i>
+            </div>
+            <h3>1. Encontre ajuda</h3>
+            <p>
+              Busque instituições próximas por
+              nome, região ou tipo de serviço.
+            </p>
+          </article>
+
+          <article class="step">
+            <div class="step-icon">
+              <i class="fa-solid fa-magnifying-glass-location"></i>
+            </div>
+            <h3>2. Confira os serviços</h3>
+            <p>
+              Veja informações sobre serviços,
+              localização e formas de contato.
+            </p>
+          </article>
+
+          <article class="step">
+            <div class="step-icon">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <h3>3. Entre em contato</h3>
+            <p>
+              Fale diretamente com a instituição
+              e receba as orientações necessárias.
+            </p>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="help-content">
+        <span class="section-label">FAÇA PARTE DESSA REDE</span>
+        <h2>Quero ajudar</h2>
+
+        <p>
+          Você pode fazer a diferença!
+          Encontre instituições que precisam de:
+        </p>
+
+        <div class="help-options">
+          <span><i class="fa-solid fa-box-open"></i> Doações</span>
+          <span><i class="fa-solid fa-shirt"></i> Roupas</span>
+          <span><i class="fa-solid fa-utensils"></i> Alimentos</span>
+          <span><i class="fa-solid fa-pump-soap"></i> Higiene</span>
+          <span><i class="fa-solid fa-handshake-angle"></i> Voluntários</span>
+          <span><i class="fa-solid fa-heart"></i> E muito mais</span>
+        </div>
+
+        <a href="quero-ajudar.html" class="btn-primary">
+          Ver como ajudar
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Acolhe Recife">
+
+        <p>
+          Acolhimento que aproxima.<br>
+          Ajuda que transforma.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Links rápidos</h3>
+        <a href="index.html">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html">Quero ajudar</a>
+        <a href="instituicoes.html">Instituições</a>
+      </div>
+
+      <div class="footer-about">
+        <h3>Sobre o projeto</h3>
+        <p>
+          Uma plataforma para conectar pessoas
+          que precisam de ajuda a instituições
+          de acolhimento no Recife.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2026 Acolhe Recife — Projeto acadêmico
+    </div>
+  </footer>
+
+</body>
+</html>
