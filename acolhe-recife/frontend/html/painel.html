@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Painel da Instituição | ABRICIFE</title>
+
+  <link rel="stylesheet" href="../css/login.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <style>
+    .panel {
+      width: min(1100px, 92%);
+      margin: 60px auto;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .panel-header h1 {
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+    }
+
+    .panel-back {
+      padding: 12px 20px;
+      background: var(--primary);
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .panel-card {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+    }
+
+    .panel-card i {
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 30px;
+    }
+
+    .panel-card h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+      color: var(--primary-dark);
+    }
+
+    .panel-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .demo-banner {
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      background: #eaf4ff;
+      border: 1px solid #cfe2ff;
+      border-radius: 10px;
+      color: #345783;
+      font-size: 13px;
+    }
+
+    @media (max-width: 800px) {
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="panel">
+    <header class="panel-header">
+      <div>
+        <h1>Painel da instituição</h1>
+        <p>Bem-vindo ao espaço de gerenciamento do ABRICIFE.</p>
+      </div>
+
+      <a href="login.html" class="panel-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar ao login
+      </a>
+    </header>
+
+    <div class="demo-banner">
+      <i class="fa-solid fa-circle-info"></i>
+      Painel demonstrativo — funcionalidades administrativas
+      ainda não conectadas ao banco de dados.
+    </div>
+
+    <section class="panel-grid" aria-label="Funcionalidades previstas">
+      <article class="panel-card">
+        <i class="fa-solid fa-building"></i>
+        <h2>Minha instituição</h2>
+        <p>
+          Atualize os dados, endereço e informações
+          de contato da instituição.
+        </p>
+      </article>
+
+      <article class="panel-card">
+        <i class="fa-solid fa-hand-holding-heart"></i>
+        <h2>Serviços oferecidos</h2>
+        <p>
+          Organize os serviços de acolhimento e
+          assistência disponíveis.
+        </p>
+      </article>
+
+      <article class="panel-card">
+        <i class="fa-solid fa-box-open"></i>
+        <h2>Necessidades</h2>
+        <p>
+          Divulgue alimentos, roupas e outros
+          itens necessários para doações.
+        </p>
+      </article>
+
+      <article class="panel-card">
+        <i class="fa-regular fa-clock"></i>
+        <h2>Horários</h2>
+        <p>
+          Gerencie os dias e horários de
+          funcionamento da instituição.
+        </p>
+      </article>
+
+      <article class="panel-card">
+        <i class="fa-solid fa-users"></i>
+        <h2>Equipe</h2>
+        <p>
+          Visualize os usuários responsáveis
+          pela administração institucional.
+        </p>
+      </article>
+
+      <article class="panel-card">
+        <i class="fa-solid fa-chart-simple"></i>
+        <h2>Visão geral</h2>
+        <p>
+          Acompanhe as informações e atividades
+          da instituição em um único lugar.
+        </p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
