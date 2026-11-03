@@ -1,166 +1,336 @@
 from classes.conexao import Conexao
 from classes.seguranca import Seguranca
 
+
 class Instituicao:
     def __init__(self):
         self.db = Conexao()
 
+    @staticmethod
+    def _id_valido(valor):
+        return type(valor) is int and valor > 0
+
+    @staticmethod
+    def _validar_dados(
+        nome, descricao, endereco, latitude,
+        longitude, telefone, email, como_ajudar
+    ):
+        dados = {
+            "nome": Seguranca.sanitizar_texto(nome, 150),
+            "descricao": Seguranca.sanitizar_texto(descricao, 2000),
+            "endereco": Seguranca.sanitizar_texto(endereco, 255),
+            "telefone": Seguranca.sanitizar_texto(telefone, 20),
+            "email": Seguranca.sanitizar_texto(email, 100),
+            "como_ajudar": Seguranca.sanitizar_texto(
+                como_ajudar, 2000
+            )
+        }
+
+        if len(dados["nome"]) < 3:
+            return None, "Nome deve ter no mínimo 3 caracteres"
+
+        if not dados["endereco"]:
+            return None, "Endereço é obrigatório"
+
+        coord_ok, coord_msg = Seguranca.validar_coordenada(
+            latitude, longitude
+        )
+
+        if not coord_ok:
+            return None, coord_msg
+
+        if dados["email"] and not Seguranca.validar_email(
+            dados["email"]
+        ):
+            return None, "Email inválido"
+
+        if dados["telefone"] and not Seguranca.validar_telefone(
+            dados["telefone"]
+        ):
+            return None, "Telefone inválido"
+
+        dados["latitude"] = float(latitude)
+        dados["longitude"] = float(longitude)
+
+        return dados, None
+
     def listar_todas(self):
-        resultado = self.db.executar("""
-            SELECT id, nome, descricao, endereco, latitude, longitude,
-                   telefone, email, como_ajudar
+        return self.db.executar(
+            """
+            SELECT
+                id, nome, descricao, endereco,
+                latitude, longitude, telefone,
+                email, como_ajudar
             FROM instituicoes
             ORDER BY nome
-        """)
-        return resultado if resultado else []
+            """
+        ) or []
 
     def buscar_por_id(self, id):
-        if not isinstance(id, int) or id <= 0:
+        if not self._id_valido(id):
             return None
-        resultado = self.db.executar("""
-            SELECT id, nome, descricao, endereco, latitude, longitude,
-                   telefone, email, como_ajudar
-            FROM instituicoes WHERE id = %s
-        """, (id,))
+
+        resultado = self.db.executar(
+            """
+            SELECT
+                id, nome, descricao, endereco,
+                latitude, longitude, telefone,
+                email, como_ajudar
+            FROM instituicoes
+            WHERE id = :id
+            """,
+            {"id": id}
+        )
+
         return resultado[0] if resultado else None
 
-    def criar(self, nome, descricao, endereco, latitude, longitude, telefone, email, como_ajudar):
-        nome = Seguranca.sanitizar_texto(nome, 150)
-        descricao = Seguranca.sanitizar_texto(descricao, 2000)
-        endereco = Seguranca.sanitizar_texto(endereco, 255)
-        telefone = Seguranca.sanitizar_texto(telefone, 20)
-        email = Seguranca.sanitizar_texto(email, 100)
-        como_ajudar = Seguranca.sanitizar_texto(como_ajudar, 2000)
+    def criar(
+        self, nome, descricao, endereco, latitude,
+        longitude, telefone, email, como_ajudar
+    ):
+        dados, erro = self._validar_dados(
+            nome, descricao, endereco, latitude,
+            longitude, telefone, email, como_ajudar
+        )
 
-        if not nome or len(nome) < 3:
-            return {"erro": "Nome deve ter no mínimo 3 caracteres"}
-        if not endereco:
-            return {"erro": "Endereço é obrigatório"}
+        if erro:
+            return {"erro": erro}
 
-        coord_ok, coord_msg = Seguranca.validar_coordenada(latitude, longitude)
-        if not coord_ok:
-            return {"erro": coord_msg}
+        resultado = self.db.executar(
+            """
+            INSERT INTO instituicoes (
+                nome, descricao, endereco, latitude,
+                longitude, telefone, email, como_ajudar
+            )
+            VALUES (
+                :nome, :descricao, :endereco, :latitude,
+                :longitude, :telefone, :email, :como_ajudar
+            )
+            RETURNING id
+            """,
+            dados
+        )
 
-        if email and not Seguranca.validar_email(email):
-            return {"erro": "Email inválido"}
+        return {
+            "sucesso": True,
+            "id": resultado[0]["id"]
+        }
 
-        if telefone and not Seguranca.validar_telefone(telefone):
-            return {"erro": "Telefone inválido"}
-
-        self.db.executar("""
-            INSERT INTO instituicoes (nome, descricao, endereco, latitude, longitude, telefone, email, como_ajudar)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (nome, descricao, endereco, float(latitude), float(longitude), telefone, email, como_ajudar))
-
-        resultado = self.db.executar("SELECT LAST_INSERT_ID() as id")
-        if resultado:
-            return {"sucesso": True, "id": resultado[0]['id']}
-        return {"erro": "Erro ao criar instituição"}
-
-    def atualizar(self, id, nome, descricao, endereco, latitude, longitude, telefone, email, como_ajudar):
-        if not isinstance(id, int) or id <= 0:
+    def atualizar(
+        self, id, nome, descricao, endereco, latitude,
+        longitude, telefone, email, como_ajudar
+    ):
+        if not self._id_valido(id):
             return {"erro": "ID inválido"}
 
-        nome = Seguranca.sanitizar_texto(nome, 150)
-        descricao = Seguranca.sanitizar_texto(descricao, 2000)
-        endereco = Seguranca.sanitizar_texto(endereco, 255)
-        telefone = Seguranca.sanitizar_texto(telefone, 20)
-        email = Seguranca.sanitizar_texto(email, 100)
-        como_ajudar = Seguranca.sanitizar_texto(como_ajudar, 2000)
+        dados, erro = self._validar_dados(
+            nome, descricao, endereco, latitude,
+            longitude, telefone, email, como_ajudar
+        )
 
-        if not nome or len(nome) < 3:
-            return {"erro": "Nome deve ter no mínimo 3 caracteres"}
+        if erro:
+            return {"erro": erro}
 
-        coord_ok, coord_msg = Seguranca.validar_coordenada(latitude, longitude)
-        if not coord_ok:
-            return {"erro": coord_msg}
+        dados["id"] = id
 
-        self.db.executar("""
+        resultado = self.db.executar(
+            """
             UPDATE instituicoes
-            SET nome = %s, descricao = %s, endereco = %s, latitude = %s, longitude = %s,
-                telefone = %s, email = %s, como_ajudar = %s, ultima_atualizacao = CURRENT_TIMESTAMP
-            WHERE id = %s
-        """, (nome, descricao, endereco, float(latitude), float(longitude), telefone, email, como_ajudar, id))
+            SET
+                nome = :nome,
+                descricao = :descricao,
+                endereco = :endereco,
+                latitude = :latitude,
+                longitude = :longitude,
+                telefone = :telefone,
+                email = :email,
+                como_ajudar = :como_ajudar,
+                ultima_atualizacao = CURRENT_TIMESTAMP
+            WHERE id = :id
+            RETURNING id
+            """,
+            dados
+        )
+
+        if not resultado:
+            return {"erro": "Instituição não encontrada"}
+
         return {"sucesso": True}
 
     def deletar(self, id):
-        if not isinstance(id, int) or id <= 0:
+        if not self._id_valido(id):
             return {"erro": "ID inválido"}
-        self.db.executar("DELETE FROM instituicoes WHERE id = %s", (id,))
+
+        resultado = self.db.executar(
+            """
+            DELETE FROM instituicoes
+            WHERE id = :id
+            RETURNING id
+            """,
+            {"id": id}
+        )
+
+        if not resultado:
+            return {"erro": "Instituição não encontrada"}
+
         return {"sucesso": True}
 
     def listar_servicos(self, instituicao_id):
-        if not isinstance(instituicao_id, int) or instituicao_id <= 0:
+        if not self._id_valido(instituicao_id):
             return []
-        resultado = self.db.executar(
-            "SELECT id, tipo, descricao FROM servicos WHERE instituicao_id = %s",
-            (instituicao_id,)
-        )
-        return resultado if resultado else []
 
-    def adicionar_servico(self, instituicao_id, tipo, descricao):
+        return self.db.executar(
+            """
+            SELECT id, tipo, descricao
+            FROM servicos
+            WHERE instituicao_id = :instituicao_id
+            ORDER BY id
+            """,
+            {"instituicao_id": instituicao_id}
+        ) or []
+
+    def adicionar_servico(
+        self, instituicao_id, tipo, descricao
+    ):
+        if not self._id_valido(instituicao_id):
+            return {"erro": "Instituição inválida"}
+
         tipo = Seguranca.sanitizar_texto(tipo, 50)
         descricao = Seguranca.sanitizar_texto(descricao, 500)
 
         if not tipo:
             return {"erro": "Tipo de serviço é obrigatório"}
 
-        self.db.executar(
-            "INSERT INTO servicos (instituicao_id, tipo, descricao) VALUES (%s, %s, %s)",
-            (instituicao_id, tipo, descricao)
+        resultado = self.db.executar(
+            """
+            INSERT INTO servicos (
+                instituicao_id, tipo, descricao
+            )
+            VALUES (
+                :instituicao_id, :tipo, :descricao
+            )
+            RETURNING id
+            """,
+            {
+                "instituicao_id": instituicao_id,
+                "tipo": tipo,
+                "descricao": descricao
+            }
         )
-        resultado = self.db.executar("SELECT LAST_INSERT_ID() as id")
-        if resultado:
-            return {"sucesso": True, "id": resultado[0]['id']}
-        return {"erro": "Erro ao adicionar serviço"}
+
+        return {
+            "sucesso": True,
+            "id": resultado[0]["id"]
+        }
 
     def listar_necessidades(self, instituicao_id):
-        if not isinstance(instituicao_id, int) or instituicao_id <= 0:
+        if not self._id_valido(instituicao_id):
             return []
-        resultado = self.db.executar(
-            "SELECT id, item, descricao, urgencia FROM necessidades WHERE instituicao_id = %s",
-            (instituicao_id,)
-        )
-        return resultado if resultado else []
 
-    def adicionar_necessidade(self, instituicao_id, item, descricao, urgencia):
+        return self.db.executar(
+            """
+            SELECT id, item, descricao, urgencia
+            FROM necessidades
+            WHERE instituicao_id = :instituicao_id
+            ORDER BY id
+            """,
+            {"instituicao_id": instituicao_id}
+        ) or []
+
+    def adicionar_necessidade(
+        self, instituicao_id, item, descricao, urgencia
+    ):
+        if not self._id_valido(instituicao_id):
+            return {"erro": "Instituição inválida"}
+
         item = Seguranca.sanitizar_texto(item, 100)
         descricao = Seguranca.sanitizar_texto(descricao, 500)
 
         if not item:
             return {"erro": "Item é obrigatório"}
 
-        if urgencia not in ('baixa', 'media', 'alta'):
-            urgencia = 'media'
+        if urgencia not in ("baixa", "media", "alta"):
+            urgencia = "media"
 
-        self.db.executar(
-            "INSERT INTO necessidades (instituicao_id, item, descricao, urgencia) VALUES (%s, %s, %s, %s)",
-            (instituicao_id, item, descricao, urgencia)
+        resultado = self.db.executar(
+            """
+            INSERT INTO necessidades (
+                instituicao_id, item, descricao, urgencia
+            )
+            VALUES (
+                :instituicao_id, :item,
+                :descricao, :urgencia
+            )
+            RETURNING id
+            """,
+            {
+                "instituicao_id": instituicao_id,
+                "item": item,
+                "descricao": descricao,
+                "urgencia": urgencia
+            }
         )
-        resultado = self.db.executar("SELECT LAST_INSERT_ID() as id")
-        if resultado:
-            return {"sucesso": True, "id": resultado[0]['id']}
-        return {"erro": "Erro ao adicionar necessidade"}
+
+        return {
+            "sucesso": True,
+            "id": resultado[0]["id"]
+        }
 
     def listar_horarios(self, instituicao_id):
-        if not isinstance(instituicao_id, int) or instituicao_id <= 0:
+        if not self._id_valido(instituicao_id):
             return []
-        resultado = self.db.executar(
-            "SELECT id, dia_semana, horario_abertura, horario_fechamento FROM horarios WHERE instituicao_id = %s",
-            (instituicao_id,)
-        )
-        return resultado if resultado else []
 
-    def adicionar_horario(self, instituicao_id, dia_semana, abertura, fechamento):
-        dias_validos = ('segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo')
+        return self.db.executar(
+            """
+            SELECT
+                id, dia_semana,
+                horario_abertura, horario_fechamento
+            FROM horarios
+            WHERE instituicao_id = :instituicao_id
+            ORDER BY id
+            """,
+            {"instituicao_id": instituicao_id}
+        ) or []
+
+    def adicionar_horario(
+        self, instituicao_id, dia_semana,
+        abertura, fechamento
+    ):
+        if not self._id_valido(instituicao_id):
+            return {"erro": "Instituição inválida"}
+
+        dias_validos = (
+            "segunda", "terca", "quarta",
+            "quinta", "sexta", "sabado", "domingo"
+        )
+
         if dia_semana not in dias_validos:
             return {"erro": "Dia da semana inválido"}
 
-        self.db.executar(
-            "INSERT INTO horarios (instituicao_id, dia_semana, horario_abertura, horario_fechamento) VALUES (%s, %s, %s, %s)",
-            (instituicao_id, dia_semana, abertura, fechamento)
+        if not abertura or not fechamento:
+            return {"erro": "Informe os horários de funcionamento"}
+
+        resultado = self.db.executar(
+            """
+            INSERT INTO horarios (
+                instituicao_id, dia_semana,
+                horario_abertura, horario_fechamento
+            )
+            VALUES (
+                :instituicao_id, :dia_semana,
+                :abertura, :fechamento
+            )
+            RETURNING id
+            """,
+            {
+                "instituicao_id": instituicao_id,
+                "dia_semana": dia_semana,
+                "abertura": abertura,
+                "fechamento": fechamento
+            }
         )
-        resultado = self.db.executar("SELECT LAST_INSERT_ID() as id")
-        if resultado:
-            return {"sucesso": True, "id": resultado[0]['id']}
-        return {"erro": "Erro ao adicionar horário"}
+
+        return {
+            "sucesso": True,
+            "id": resultado[0]["id"]
+        }

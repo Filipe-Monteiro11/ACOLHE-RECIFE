@@ -1,312 +1,406 @@
-from flask import Flask, request, jsonify
+import os
+from functools import wraps
+
+from dotenv import load_dotenv
+from flask import Flask, g, jsonify, request
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from werkzeug.exceptions import HTTPException
+
 from classes.usuario import Usuario
 from classes.instituicao import Instituicao
 
+load_dotenv()
+
 app = Flask(__name__)
 
-# ============================
-# SEGURANÇA — Headers HTTP
-# ============================
-Talisman(app,
-    force_https=False,  # False em desenvolvimento, True em produção
-    strict_transport_security=True,
+app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024
+app.config["JSON_SORT_KEYS"] = False
+
+ambiente = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+
+Talisman(
+    app,
+    force_https=False,
+    strict_transport_security=False,
     content_security_policy=None,
-    referrer_policy='strict-origin-when-cross-origin'
+    referrer_policy="strict-origin-when-cross-origin"
 )
 
-# ============================
-# CORS — Restrito a domínios autorizados
-# ============================
-CORS(app, resources={
-    r"/*": {
-        "origins": [
-            "http://127.0.0.1:5500",
-            "http://localhost:5500",
-            "http://127.0.0.1:3000",
-            "http://localhost:3000"
-        ],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "max_age": 3600
-    }
-})
+origens = [
+    origem.strip()
+    for origem in os.getenv(
+        "CORS_ORIGINS",
+        "http://127.0.0.1:5500,http://localhost:5500,"
+        "http://127.0.0.1:3000,http://localhost:3000"
+    ).split(",")
+    if origem.strip()
+]
 
-# ============================
-# RATE LIMITING — Proteção contra brute force e spam
-# ============================
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": origens,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "max_age": 3600
+        }
+    }
+)
+
 limiter = Limiter(
-    app=app,
     key_func=get_remote_address,
+    app=app,
     default_limits=["200 per hour", "50 per minute"],
     storage_uri="memory://"
 )
 
-# ============================
-# Limite de tamanho de request (proteção contra payload gigante)
-# ============================
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB máximo
-
 usuario_model = Usuario()
 instituicao_model = Instituicao()
 
-# ============================
+
 # AUTENTICAÇÃO
-# ============================
 
-@app.route('/login', methods=['POST'])
-@limiter.limit("5 per minute")  # Máx 5 tentativas de login por minuto
+def autenticar(funcao):
+    @wraps(funcao)
+    def wrapper(*args, **kwargs):
+        autorizacao = request.headers.get("Authorization", "")
+        partes = autorizacao.split()
+
+        if len(partes) != 2 or partes[0].lower() != "bearer":
+            return jsonify({"erro": "Token não fornecido"}), 401
+
+        verificacao = usuario_model.verificar_token(partes[1])
+
+        if "erro" in verificacao:
+            return jsonify(verificacao), 401
+
+        usuario_id = verificacao.get("user_id")
+        instituicao_id = verificacao.get("instituicao_id")
+
+        if (
+            type(usuario_id) is not int
+            or type(instituicao_id) is not int
+        ):
+            return jsonify({"erro": "Token inválido"}), 401
+
+        usuarios = usuario_model.db.executar(
+            """
+            SELECT id, instituicao_id
+            FROM usuarios
+            WHERE id = :id AND ativo = TRUE
+            """,
+            {"id": usuario_id}
+        )
+
+        if not usuarios:
+            return jsonify({"erro": "Usuário não autorizado"}), 401
+
+        usuario = usuarios[0]
+
+        if usuario["instituicao_id"] != instituicao_id:
+            return jsonify({"erro": "Token inválido"}), 401
+
+        g.usuario = usuario
+
+        return funcao(*args, **kwargs)
+
+    return wrapper
+
+
+def verificar_instituicao(funcao):
+    @wraps(funcao)
+    @autenticar
+    def wrapper(id, *args, **kwargs):
+        if g.usuario["instituicao_id"] != id:
+            return jsonify({
+                "erro": "Você não tem permissão para esta instituição"
+            }), 403
+
+        if not instituicao_model.buscar_por_id(id):
+            return jsonify({"erro": "Instituição não encontrada"}), 404
+
+        return funcao(id, *args, **kwargs)
+
+    return wrapper
+
+
+def obter_json():
+    if not request.is_json:
+        return None
+
+    dados = request.get_json(silent=True)
+
+    return dados if isinstance(dados, dict) else None
+
+
+def responder(resultado, sucesso=200):
+    if "erro" in resultado:
+        mensagem = resultado["erro"]
+
+        if mensagem in (
+            "Instituição não encontrada",
+            "Usuário não encontrado"
+        ):
+            return jsonify(resultado), 404
+
+        return jsonify(resultado), 400
+
+    return jsonify(resultado), sucesso
+
+
+# LOGIN
+
+@app.post("/login")
+@limiter.limit("5 per minute")
 def login():
-    dados = request.json or {}
-    ip = get_remote_address()
-    resultado = usuario_model.login(dados.get('email'), dados.get('senha'), ip)
-    if 'erro' in resultado:
+    dados = obter_json()
+
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
+    resultado = usuario_model.login(
+        dados.get("email"),
+        dados.get("senha"),
+        get_remote_address()
+    )
+
+    if "erro" in resultado:
         return jsonify(resultado), 401
-    return jsonify(resultado)
 
-@app.route('/setup', methods=['POST'])
-@limiter.limit("3 per hour")  # Setup só 3x por hora
-def criar_admin():
-    dados = request.json or {}
-    resultado = usuario_model.criar(
-        dados.get('nome'),
-        dados.get('email'),
-        dados.get('senha'),
-        dados.get('instituicao_id', 1)
-    )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
+    return jsonify(resultado), 200
 
-@app.route('/usuarios', methods=['POST'])
+
+# USUÁRIOS
+
+@app.post("/usuarios")
 @limiter.limit("10 per hour")
+@autenticar
 def criar_usuario():
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    dados = obter_json()
 
-    dados = request.json or {}
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
+    instituicao_id = g.usuario["instituicao_id"]
+
     resultado = usuario_model.criar(
-        dados.get('nome'),
-        dados.get('email'),
-        dados.get('senha'),
-        dados.get('instituicao_id')
+        dados.get("nome"),
+        dados.get("email"),
+        dados.get("senha"),
+        instituicao_id
     )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
 
-# ============================
+    return responder(resultado, 201)
+
+
 # INSTITUIÇÕES
-# ============================
 
-@app.route('/instituicoes', methods=['GET'])
+@app.get("/instituicoes")
 def listar_instituicoes():
-    resultado = instituicao_model.listar_todas()
-    return jsonify(resultado)
+    return jsonify(instituicao_model.listar_todas())
 
-@app.route('/instituicoes/<int:id>', methods=['GET'])
+
+@app.get("/instituicoes/<int:id>")
 def buscar_instituicao(id):
     resultado = instituicao_model.buscar_por_id(id)
+
     if not resultado:
         return jsonify({"erro": "Instituição não encontrada"}), 404
+
     return jsonify(resultado)
 
-@app.route('/instituicoes', methods=['POST'])
+
+@app.post("/instituicoes")
 @limiter.limit("20 per hour")
+@autenticar
 def criar_instituicao():
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    return jsonify({
+        "erro": (
+            "Cadastro de instituições indisponível nesta rota. "
+            "É necessária autorização administrativa."
+        )
+    }), 403
 
-    dados = request.json or {}
-    resultado = instituicao_model.criar(
-        dados.get('nome'),
-        dados.get('descricao'),
-        dados.get('endereco'),
-        dados.get('latitude'),
-        dados.get('longitude'),
-        dados.get('telefone'),
-        dados.get('email'),
-        dados.get('como_ajudar')
-    )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
 
-@app.route('/instituicoes/<int:id>', methods=['PUT'])
+@app.put("/instituicoes/<int:id>")
 @limiter.limit("20 per hour")
+@verificar_instituicao
 def atualizar_instituicao(id):
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    dados = obter_json()
 
-    dados = request.json or {}
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
     resultado = instituicao_model.atualizar(
         id,
-        dados.get('nome'),
-        dados.get('descricao'),
-        dados.get('endereco'),
-        dados.get('latitude'),
-        dados.get('longitude'),
-        dados.get('telefone'),
-        dados.get('email'),
-        dados.get('como_ajudar')
+        dados.get("nome"),
+        dados.get("descricao"),
+        dados.get("endereco"),
+        dados.get("latitude"),
+        dados.get("longitude"),
+        dados.get("telefone"),
+        dados.get("email"),
+        dados.get("como_ajudar")
     )
-    return jsonify(resultado)
 
-@app.route('/instituicoes/<int:id>', methods=['DELETE'])
+    return responder(resultado)
+
+
+@app.delete("/instituicoes/<int:id>")
 @limiter.limit("10 per hour")
+@verificar_instituicao
 def deletar_instituicao(id):
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
-
     resultado = instituicao_model.deletar(id)
-    return jsonify(resultado)
+    return responder(resultado)
 
-# ============================
+
 # SERVIÇOS
-# ============================
 
-@app.route('/instituicoes/<int:id>/servicos', methods=['GET'])
+@app.get("/instituicoes/<int:id>/servicos")
 def listar_servicos(id):
-    resultado = instituicao_model.listar_servicos(id)
-    return jsonify(resultado)
+    if not instituicao_model.buscar_por_id(id):
+        return jsonify({"erro": "Instituição não encontrada"}), 404
 
-@app.route('/instituicoes/<int:id>/servicos', methods=['POST'])
+    return jsonify(instituicao_model.listar_servicos(id))
+
+
+@app.post("/instituicoes/<int:id>/servicos")
 @limiter.limit("30 per hour")
+@verificar_instituicao
 def adicionar_servico(id):
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    dados = obter_json()
 
-    dados = request.json or {}
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
     resultado = instituicao_model.adicionar_servico(
         id,
-        dados.get('tipo'),
-        dados.get('descricao')
+        dados.get("tipo"),
+        dados.get("descricao")
     )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
 
-# ============================
+    return responder(resultado, 201)
+
+
 # NECESSIDADES
-# ============================
 
-@app.route('/instituicoes/<int:id>/necessidades', methods=['GET'])
+@app.get("/instituicoes/<int:id>/necessidades")
 def listar_necessidades(id):
-    resultado = instituicao_model.listar_necessidades(id)
-    return jsonify(resultado)
+    if not instituicao_model.buscar_por_id(id):
+        return jsonify({"erro": "Instituição não encontrada"}), 404
 
-@app.route('/instituicoes/<int:id>/necessidades', methods=['POST'])
+    return jsonify(instituicao_model.listar_necessidades(id))
+
+
+@app.post("/instituicoes/<int:id>/necessidades")
 @limiter.limit("30 per hour")
+@verificar_instituicao
 def adicionar_necessidade(id):
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    dados = obter_json()
 
-    dados = request.json or {}
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
     resultado = instituicao_model.adicionar_necessidade(
         id,
-        dados.get('item'),
-        dados.get('descricao'),
-        dados.get('urgencia', 'media')
+        dados.get("item"),
+        dados.get("descricao"),
+        dados.get("urgencia", "media")
     )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
 
-# ============================
+    return responder(resultado, 201)
+
+
 # HORÁRIOS
-# ============================
 
-@app.route('/instituicoes/<int:id>/horarios', methods=['GET'])
+@app.get("/instituicoes/<int:id>/horarios")
 def listar_horarios(id):
-    resultado = instituicao_model.listar_horarios(id)
-    return jsonify(resultado)
+    if not instituicao_model.buscar_por_id(id):
+        return jsonify({"erro": "Instituição não encontrada"}), 404
 
-@app.route('/instituicoes/<int:id>/horarios', methods=['POST'])
+    horarios = instituicao_model.listar_horarios(id)
+
+    for horario in horarios:
+        for campo in ("horario_abertura", "horario_fechamento"):
+            valor = horario.get(campo)
+
+            if hasattr(valor, "strftime"):
+                horario[campo] = valor.strftime("%H:%M")
+
+    return jsonify(horarios)
+
+
+@app.post("/instituicoes/<int:id>/horarios")
 @limiter.limit("30 per hour")
+@verificar_instituicao
 def adicionar_horario(id):
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"erro": "Token não fornecido"}), 401
-    token = token.replace('Bearer ', '')
-    verificacao = usuario_model.verificar_token(token)
-    if 'erro' in verificacao:
-        return jsonify(verificacao), 401
+    dados = obter_json()
 
-    dados = request.json or {}
+    if dados is None:
+        return jsonify({"erro": "Envie um JSON válido"}), 400
+
     resultado = instituicao_model.adicionar_horario(
         id,
-        dados.get('dia_semana'),
-        dados.get('abertura'),
-        dados.get('fechamento')
+        dados.get("dia_semana"),
+        dados.get("abertura"),
+        dados.get("fechamento")
     )
-    if 'erro' in resultado:
-        return jsonify(resultado), 400
-    return jsonify(resultado), 201
 
-# ============================
+    return responder(resultado, 201)
+
+
 # TRATAMENTO DE ERROS
-# ============================
 
-@app.errorhandler(400)
-def erro_400(e):
-    return jsonify({"erro": "Requisição inválida"}), 400
+@app.errorhandler(HTTPException)
+def tratar_erro_http(erro):
+    mensagens = {
+        400: "Requisição inválida",
+        404: "Recurso não encontrado",
+        405: "Método não permitido",
+        413: "Dados enviados são muito grandes (máx. 1 MB)",
+        429: "Muitas requisições. Aguarde alguns minutos"
+    }
 
-@app.errorhandler(401)
-def erro_401(e):
-    return jsonify({"erro": "Não autorizado"}), 401
+    mensagem = mensagens.get(erro.code, erro.description)
 
-@app.errorhandler(404)
-def erro_404(e):
-    return jsonify({"erro": "Recurso não encontrado"}), 404
+    return jsonify({"erro": mensagem}), erro.code
 
-@app.errorhandler(413)
-def erro_413(e):
-    return jsonify({"erro": "Dados enviados são muito grandes (máx 1MB)"}), 413
 
-@app.errorhandler(429)
-def erro_429(e):
-    return jsonify({"erro": "Muitas requisições. Aguarde alguns minutos."}), 429
+@app.errorhandler(IntegrityError)
+def tratar_integridade(erro):
+    app.logger.warning("Violação de integridade no banco de dados")
 
-@app.errorhandler(500)
-def erro_500(e):
+    return jsonify({
+        "erro": "Não foi possível concluir a operação devido a um conflito de dados"
+    }), 409
+
+
+@app.errorhandler(SQLAlchemyError)
+def tratar_banco(erro):
+    app.logger.exception("Erro de banco de dados")
+
+    return jsonify({
+        "erro": "Erro ao acessar o banco de dados"
+    }), 500
+
+
+@app.errorhandler(Exception)
+def tratar_erro(erro):
+    app.logger.exception("Erro interno")
+
     return jsonify({"erro": "Erro interno do servidor"}), 500
 
-# ============================
-# INICIAR SERVIDOR
-# ============================
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+# INICIAR SERVIDOR
+
+if __name__ == "__main__":
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=ambiente
+    )
