@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#063da8">
+  <meta
+    name="description"
+    content="Descubra como contribuir com instituições de acolhimento no Recife."
+  >
+
+  <title>Quero ajudar | ABRICIFE</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/quero-ajudar.css">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <script src="../js/quero-ajudar.js" defer></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <a href="index.html" class="logo" aria-label="Acolhe Recife - Início">
+        <img src="../assets/img/logo.png" alt="Acolhe Recife">
+      </a>
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-controls="menu"
+        aria-expanded="false"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <nav class="menu" id="menu" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html" class="active" aria-current="page">
+          Quero ajudar
+        </a>
+        <a href="instituicoes.html">Instituições</a>
+        <a href="sobre.html">Sobre o projeto</a>
+      </nav>
+
+      <a href="login.html" class="btn-instituicao">
+        <i class="fa-solid fa-building-columns"></i>
+        <span>Área da instituição</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- APRESENTAÇÃO -->
+    <section class="donation-hero">
+      <div class="donation-hero-content">
+        <span class="donation-eyebrow">
+          <i class="fa-solid fa-heart"></i>
+          FAÇA PARTE DESSA TRANSFORMAÇÃO
+        </span>
+
+        <h1>
+          Sua ajuda pode fazer
+          <span>a diferença.</span>
+        </h1>
+
+        <p>
+          Pequenas atitudes podem transformar vidas.
+          Descubra como contribuir com instituições
+          e iniciativas de acolhimento no Recife.
+        </p>
+
+        <a href="#necessidades" class="donation-primary-button">
+          Encontrar onde ajudar
+          <i class="fa-solid fa-arrow-down"></i>
+        </a>
+      </div>
+
+      <div class="donation-hero-illustration" aria-hidden="true">
+        <div class="donation-illustration-circle">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMAS DE AJUDAR -->
+    <section class="donation-section donation-methods">
+      <div class="donation-section-heading">
+        <span class="donation-section-label">COMO CONTRIBUIR</span>
+        <h2>Existem várias formas de ajudar</h2>
+        <p>
+          Escolha a maneira que melhor combina com você
+          e faça parte de uma rede de solidariedade.
+        </p>
+      </div>
+
+      <div class="donation-method-grid">
+
+        <article class="donation-method-card">
+          <div class="donation-method-icon">
+            <i class="fa-solid fa-basket-shopping"></i>
+          </div>
+
+          <h3>Doação de alimentos</h3>
+          <p>
+            Contribua com alimentos não perecíveis
+            e ajude instituições que oferecem
+            assistência alimentar.
+          </p>
+
+          <button type="button" data-category="Alimentos">
+            Encontrar instituições
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </article>
+
+        <article class="donation-method-card">
+          <div class="donation-method-icon">
+            <i class="fa-solid fa-shirt"></i>
+          </div>
+
+          <h3>Roupas e agasalhos</h3>
+          <p>
+            Doe roupas em boas condições
+            e contribua para o conforto
+            de pessoas que precisam.
+          </p>
+
+          <button type="button" data-category="Roupas">
+            Encontrar instituições
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </article>
+
+        <article class="donation-method-card">
+          <div class="donation-method-icon">
+            <i class="fa-solid fa-pump-soap"></i>
+          </div>
+
+          <h3>Produtos de higiene</h3>
+          <p>
+            Ajude com itens de higiene pessoal
+            e produtos essenciais para
+            os cuidados do dia a dia.
+          </p>
+
+          <button type="button" data-category="Higiene">
+            Encontrar instituições
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </article>
+
+        <article class="donation-method-card">
+          <div class="donation-method-icon">
+            <i class="fa-solid fa-people-group"></i>
+          </div>
+
+          <h3>Trabalho voluntário</h3>
+          <p>
+            Compartilhe seu tempo, conhecimento
+            e habilidades para apoiar
+            projetos sociais.
+          </p>
+
+          <button type="button" data-category="Voluntariado">
+            Encontrar instituições
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- NECESSIDADES -->
+    <section class="donation-needs-section" id="necessidades">
+      <div class="donation-section">
+
+        <div class="donation-section-heading">
+          <span class="donation-section-label">OPORTUNIDADES DE AJUDA</span>
+          <h2>Instituições que precisam de apoio</h2>
+          <p>
+            Explore as necessidades cadastradas
+            e descubra como você pode contribuir.
+          </p>
+        </div>
+
+        <form id="donation-search-form" class="donation-search-form">
+          <div class="donation-field donation-field-search">
+            <label for="donation-search">Pesquisar</label>
+
+            <div class="donation-input">
+              <i class="fa-solid fa-magnifying-glass"></i>
+
+              <input
+                type="search"
+                id="donation-search"
+                placeholder="Nome, bairro ou necessidade..."
+              >
+            </div>
+          </div>
+
+          <div class="donation-field">
+            <label for="donation-category">Tipo de ajuda</label>
+
+            <select id="donation-category">
+              <option value="">Todos os tipos</option>
+              <option value="Alimentos">Alimentos</option>
+              <option value="Roupas">Roupas</option>
+              <option value="Higiene">Higiene</option>
+              <option value="Voluntariado">Voluntariado</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div class="donation-field">
+            <label for="donation-region">Bairro</label>
+
+            <select id="donation-region">
+              <option value="">Todos os bairros</option>
+            </select>
+          </div>
+
+          <button type="submit" class="donation-search-button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Buscar
+          </button>
+        </form>
+
+        <div class="donation-results-header">
+          <p id="donation-results-count" role="status" aria-live="polite"></p>
+
+          <button type="button" id="donation-clear-filters">
+            <i class="fa-solid fa-rotate-left"></i>
+            Limpar filtros
+          </button>
+        </div>
+
+        <div class="donation-demo-notice">
+          <i class="fa-solid fa-circle-info"></i>
+          <p>
+            <strong>Conteúdo demonstrativo:</strong>
+            as instituições e necessidades apresentadas
+            são fictícias e foram criadas para a apresentação
+            acadêmica. Não realize doações com base nestes exemplos.
+          </p>
+        </div>
+
+        <div id="donation-institution-list" class="donation-institution-grid"></div>
+
+      </div>
+    </section>
+
+    <!-- PASSO A PASSO -->
+    <section class="donation-section donation-steps">
+      <div class="donation-section-heading">
+        <span class="donation-section-label">SIMPLES E ACESSÍVEL</span>
+        <h2>Como funciona a doação?</h2>
+        <p>
+          Veja como será possível contribuir
+          por meio da nossa plataforma.
+        </p>
+      </div>
+
+      <div class="donation-steps-grid">
+
+        <article class="donation-step">
+          <span class="donation-step-number">01</span>
+
+          <div class="donation-step-icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+
+          <h3>Encontre uma instituição</h3>
+          <p>
+            Explore as instituições e escolha
+            uma iniciativa que deseja apoiar.
+          </p>
+        </article>
+
+        <article class="donation-step">
+          <span class="donation-step-number">02</span>
+
+          <div class="donation-step-icon">
+            <i class="fa-solid fa-clipboard-list"></i>
+          </div>
+
+          <h3>Confira as necessidades</h3>
+          <p>
+            Veja os itens ou serviços
+            que a instituição está solicitando.
+          </p>
+        </article>
+
+        <article class="donation-step">
+          <span class="donation-step-number">03</span>
+
+          <div class="donation-step-icon">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+
+          <h3>Combine sua contribuição</h3>
+          <p>
+            Entre em contato com a instituição
+            e confirme como realizar a doação.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CHAMADA FINAL -->
+    <section class="donation-bottom-cta">
+      <div>
+        <span class="donation-section-label">JUNTOS SOMOS MAIS FORTES</span>
+        <h2>Solidariedade começa com uma atitude.</h2>
+        <p>
+          Conheça as instituições e descubra
+          outras maneiras de fazer a diferença.
+        </p>
+      </div>
+
+      <a href="instituicoes.html" class="donation-primary-button">
+        Conhecer instituições
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+
+      <div class="footer-brand">
+        <img src="../assets/img/logo.png" alt="Acolhe Recife">
+        <p>
+          Acolhimento que aproxima.<br>
+          Ajuda que transforma.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Links rápidos</h3>
+        <a href="index.html">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html">Quero ajudar</a>
+        <a href="instituicoes.html">Instituições</a>
+      </div>
+
+      <div class="footer-about">
+        <h3>Sobre o projeto</h3>
+        <p>
+          Uma plataforma para aproximar pessoas
+          e instituições de acolhimento no Recife.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2026 Acolhe Recife — Projeto acadêmico
+    </div>
+  </footer>
+
+</body>
+</html>
