@@ -57,17 +57,39 @@
   </header>
 
   <main class="inst-main">
+
+    <!-- APRESENTAÇÃO -->
     <section class="inst-intro">
-      <div class="inst-container">
-        <h1>Instituições que acolhem no Recife</h1>
+      <div class="inst-intro__content">
+        <span class="inst-eyebrow">
+          <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
+          REDE DE ACOLHIMENTO DO RECIFE
+        </span>
+
+        <h1>
+          Instituições que
+          <span>acolhem no Recife.</span>
+        </h1>
+
         <p>
           Pesquise pelo nome ou filtre por bairro e tipo de serviço
           para encontrar o apoio mais perto de você.
         </p>
+
+        <a href="#inst-busca" class="inst-hero-button">
+          Encontrar instituições
+          <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="inst-intro__illustration" aria-hidden="true">
+        <div class="inst-intro__circle">
+          <i class="fa-solid fa-people-roof"></i>
+        </div>
       </div>
     </section>
 
-    <section class="inst-container" aria-label="Busca e filtros">
+    <section class="inst-container" id="inst-busca" aria-label="Busca e filtros">
       <form class="inst-filters" id="inst-form" role="search">
         <div class="inst-field">
           <label for="inst-nome">Nome da instituição</label>
