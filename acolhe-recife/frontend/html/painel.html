@@ -7,91 +7,11 @@
   <title>Painel da Instituição | ABRICIFE</title>
 
   <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/painel.css">
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
   >
-
-  <style>
-    .panel {
-      width: min(1100px, 92%);
-      margin: 60px auto;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 35px;
-    }
-
-    .panel-header h1 {
-      color: var(--primary-dark);
-      margin-bottom: 8px;
-    }
-
-    .panel-header p {
-      color: var(--muted);
-    }
-
-    .panel-back {
-      padding: 12px 20px;
-      background: var(--primary);
-      border-radius: 8px;
-      color: white;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .panel-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .panel-card {
-      padding: 28px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: white;
-    }
-
-    .panel-card i {
-      margin-bottom: 20px;
-      color: var(--primary);
-      font-size: 30px;
-    }
-
-    .panel-card h2 {
-      margin-bottom: 12px;
-      font-size: 18px;
-      color: var(--primary-dark);
-    }
-
-    .panel-card p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .demo-banner {
-      padding: 15px 20px;
-      margin-bottom: 30px;
-      background: #eaf4ff;
-      border: 1px solid #cfe2ff;
-      border-radius: 10px;
-      color: #345783;
-      font-size: 13px;
-    }
-
-    @media (max-width: 800px) {
-      .panel-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -110,65 +30,239 @@
 
     <div class="demo-banner">
       <i class="fa-solid fa-circle-info"></i>
-      Painel demonstrativo — funcionalidades administrativas
-      ainda não conectadas ao banco de dados.
+      Painel demonstrativo — os dados ficam salvos apenas neste navegador
+      até a conexão com o banco de dados.
     </div>
 
-    <section class="panel-grid" aria-label="Funcionalidades previstas">
-      <article class="panel-card">
+    <!-- NAVEGAÇÃO -->
+    <nav class="panel-grid" aria-label="Funcionalidades">
+      <button type="button" class="panel-card" data-target="sec-dados">
         <i class="fa-solid fa-building"></i>
         <h2>Minha instituição</h2>
-        <p>
-          Atualize os dados, endereço e informações
-          de contato da instituição.
-        </p>
-      </article>
+        <p>Atualize os dados, endereço e informações de contato da instituição.</p>
+      </button>
 
-      <article class="panel-card">
+      <button type="button" class="panel-card" data-target="sec-servicos">
         <i class="fa-solid fa-hand-holding-heart"></i>
         <h2>Serviços oferecidos</h2>
-        <p>
-          Organize os serviços de acolhimento e
-          assistência disponíveis.
-        </p>
-      </article>
+        <p>Organize os serviços de acolhimento e assistência disponíveis.</p>
+      </button>
 
-      <article class="panel-card">
+      <button type="button" class="panel-card" data-target="sec-necessidades">
         <i class="fa-solid fa-box-open"></i>
         <h2>Necessidades</h2>
-        <p>
-          Divulgue alimentos, roupas e outros
-          itens necessários para doações.
-        </p>
-      </article>
+        <p>Divulgue alimentos, roupas e outros itens necessários para doações.</p>
+      </button>
 
-      <article class="panel-card">
+      <button type="button" class="panel-card" data-target="sec-horarios">
         <i class="fa-regular fa-clock"></i>
         <h2>Horários</h2>
-        <p>
-          Gerencie os dias e horários de
-          funcionamento da instituição.
-        </p>
-      </article>
+        <p>Gerencie os dias e horários de funcionamento da instituição.</p>
+      </button>
 
-      <article class="panel-card">
+      <button type="button" class="panel-card" data-target="sec-equipe">
         <i class="fa-solid fa-users"></i>
         <h2>Equipe</h2>
-        <p>
-          Visualize os usuários responsáveis
-          pela administração institucional.
-        </p>
-      </article>
+        <p>Visualize os usuários responsáveis pela administração institucional.</p>
+      </button>
 
-      <article class="panel-card">
+      <button type="button" class="panel-card" data-target="sec-geral">
         <i class="fa-solid fa-chart-simple"></i>
         <h2>Visão geral</h2>
-        <p>
-          Acompanhe as informações e atividades
-          da instituição em um único lugar.
-        </p>
-      </article>
+        <p>Acompanhe as informações e atividades da instituição em um único lugar.</p>
+      </button>
+    </nav>
+
+    <!-- MINHA INSTITUIÇÃO -->
+    <section class="panel-section" id="sec-dados" hidden>
+      <div class="section-head">
+        <h2>Minha instituição</h2>
+        <p>Essas informações aparecem para quem procura ajuda ou quer doar.</p>
+      </div>
+
+      <form id="form-dados" novalidate>
+        <div class="form-grid">
+          <div class="field w-4">
+            <label for="nome">Nome da instituição</label>
+            <input type="text" id="nome" name="nome" required>
+          </div>
+          <div class="field w-2">
+            <label for="cnpj">CNPJ</label>
+            <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18">
+          </div>
+
+          <div class="field">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" maxlength="500"></textarea>
+            <small><span id="descricao-count">0</span>/500 caracteres</small>
+          </div>
+
+          <div class="field w-2">
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000" maxlength="9">
+            <small id="cep-status">O endereço é preenchido automaticamente.</small>
+          </div>
+          <div class="field w-4">
+            <label for="rua">Rua e número</label>
+            <input type="text" id="rua" name="rua">
+          </div>
+          <div class="field w-2">
+            <label for="bairro">Bairro</label>
+            <input type="text" id="bairro" name="bairro">
+          </div>
+          <div class="field w-3">
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade" name="cidade">
+          </div>
+          <div class="field w-1" style="grid-column:span 1">
+            <label for="uf">UF</label>
+            <input type="text" id="uf" name="uf" maxlength="2">
+          </div>
+
+          <div class="field w-3">
+            <label for="telefone">Telefone / WhatsApp</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="tel" placeholder="(81) 90000-0000" maxlength="15">
+          </div>
+          <div class="field w-3">
+            <label for="email">E-mail de contato</label>
+            <input type="email" id="email" name="email">
+          </div>
+          <div class="field">
+            <label for="site">Site ou rede social</label>
+            <input type="url" id="site" name="site" placeholder="https://">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> Salvar alterações</button>
+          <button type="button" class="btn ghost" id="btn-reset-dados">Desfazer alterações</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section class="panel-section" id="sec-servicos" hidden>
+      <div class="section-head">
+        <h2>Serviços oferecidos</h2>
+        <p>Liste o que a instituição oferece, como acolhimento, refeições ou apoio psicológico.</p>
+      </div>
+
+      <form class="add-row" id="form-servico" novalidate>
+        <div class="field">
+          <label for="servico-nome">Serviço</label>
+          <input type="text" id="servico-nome" maxlength="60" placeholder="Ex.: Refeições diárias">
+        </div>
+        <div class="field">
+          <label for="servico-desc">Detalhe (opcional)</label>
+          <input type="text" id="servico-desc" maxlength="120" placeholder="Ex.: Almoço para 40 pessoas">
+        </div>
+        <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Adicionar</button>
+      </form>
+
+      <ul class="item-list" id="lista-servicos"></ul>
+    </section>
+
+    <!-- NECESSIDADES -->
+    <section class="panel-section" id="sec-necessidades" hidden>
+      <div class="section-head">
+        <h2>Necessidades</h2>
+        <p>Informe o que a instituição precisa receber. Itens urgentes ganham destaque.</p>
+      </div>
+
+      <form class="add-row" id="form-necessidade" novalidate>
+        <div class="field">
+          <label for="nec-item">Item</label>
+          <input type="text" id="nec-item" maxlength="60" placeholder="Ex.: Arroz, cobertores, fraldas">
+        </div>
+        <div class="field">
+          <label for="nec-qtd">Quantidade (opcional)</label>
+          <input type="text" id="nec-qtd" maxlength="40" placeholder="Ex.: 20 kg">
+        </div>
+        <div class="field" style="flex:0 1 160px">
+          <label for="nec-prioridade">Prioridade</label>
+          <select id="nec-prioridade">
+            <option value="normal">Normal</option>
+            <option value="medium">Média</option>
+            <option value="urgent">Urgente</option>
+          </select>
+        </div>
+        <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Adicionar</button>
+      </form>
+
+      <ul class="item-list" id="lista-necessidades"></ul>
+    </section>
+
+    <!-- HORÁRIOS -->
+    <section class="panel-section" id="sec-horarios" hidden>
+      <div class="section-head">
+        <h2>Horários de funcionamento</h2>
+        <p>Marque os dias em que a instituição atende e defina o horário.</p>
+      </div>
+
+      <form id="form-horarios">
+        <div class="hours" id="horarios"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> Salvar horários</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- EQUIPE -->
+    <section class="panel-section" id="sec-equipe" hidden>
+      <div class="section-head">
+        <h2>Equipe</h2>
+        <p>Pessoas responsáveis pela administração da instituição neste painel.</p>
+      </div>
+
+      <form class="add-row" id="form-equipe" novalidate>
+        <div class="field">
+          <label for="eq-nome">Nome</label>
+          <input type="text" id="eq-nome" maxlength="60">
+        </div>
+        <div class="field">
+          <label for="eq-email">E-mail</label>
+          <input type="email" id="eq-email" maxlength="80">
+        </div>
+        <div class="field" style="flex:0 1 170px">
+          <label for="eq-papel">Função</label>
+          <select id="eq-papel">
+            <option>Administrador</option>
+            <option>Editor</option>
+            <option>Voluntário</option>
+          </select>
+        </div>
+        <button type="submit" class="btn"><i class="fa-solid fa-user-plus"></i> Adicionar</button>
+      </form>
+
+      <ul class="item-list" id="lista-equipe"></ul>
+    </section>
+
+    <!-- VISÃO GERAL -->
+    <section class="panel-section" id="sec-geral" hidden>
+      <div class="section-head">
+        <h2>Visão geral</h2>
+        <p>Um resumo do que já está preenchido.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="stat-servicos">0</strong><span>Serviços</span></div>
+        <div class="stat"><strong id="stat-necessidades">0</strong><span>Necessidades</span></div>
+        <div class="stat"><strong id="stat-dias">0</strong><span>Dias de atendimento</span></div>
+        <div class="stat"><strong id="stat-equipe">0</strong><span>Pessoas na equipe</span></div>
+      </div>
+
+      <div class="progress-wrap">
+        <p><span>Perfil preenchido</span><span id="progress-pct">0%</span></p>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
+          <span id="progress-fill"></span>
+        </div>
+        <small id="progress-hint"></small>
+      </div>
     </section>
   </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/painel.js"></script>
 </body>
 </html>

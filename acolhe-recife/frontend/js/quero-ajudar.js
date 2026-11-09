@@ -1,63 +1,98 @@
+/* ==========================================================
+   necessidades.js
+   IMPORTANTE: "instituicaoId", "instituicao" e "bairro" abaixo
+   são os MESMOS de js/instituicoes.js. Se mudar lá, mude aqui.
+   ========================================================== */
 const necessidades = [
   {
     id: 1,
     instituicaoId: 1,
-    instituicao: "Centro Esperança",
+    instituicao: "Casa Esperança",
     bairro: "Boa Vista",
-    categoria: "Alimentos",
+    categoria: "Roupas",
     prioridade: "Alta",
-    itens: ["Arroz", "Feijão", "Leite em pó"],
-    descricao: "Necessidade demonstrativa de alimentos não perecíveis."
+    itens: ["Cobertores", "Agasalhos", "Camisetas"],
+    descricao: "Roupas e cobertores para pessoas acolhidas no abrigo."
   },
   {
     id: 2,
     instituicaoId: 2,
-    instituicao: "Casa de Apoio Solidário",
+    instituicao: "Refeitório Pão Partilhado",
     bairro: "Santo Amaro",
-    categoria: "Higiene",
+    categoria: "Alimentos",
     prioridade: "Alta",
-    itens: ["Sabonete", "Creme dental", "Papel higiênico"],
-    descricao: "Itens básicos de higiene para atividades de acolhimento."
+    itens: ["Arroz", "Feijão", "Leite em pó"],
+    descricao: "Alimentos não perecíveis para o almoço e o jantar diários."
   },
   {
     id: 3,
     instituicaoId: 3,
-    instituicao: "Instituto Novos Caminhos",
+    instituicao: "Centro de Apoio Maré Viva",
     bairro: "Imbiribeira",
     categoria: "Voluntariado",
     prioridade: "Média",
-    itens: ["Apoio em oficinas", "Atividades educativas"],
-    descricao: "Participação voluntária em atividades comunitárias."
+    itens: ["Psicólogos", "Assistentes sociais", "Grupos de escuta"],
+    descricao: "Profissionais voluntários para os grupos de escuta e o atendimento psicossocial."
   },
   {
     id: 4,
     instituicaoId: 4,
-    instituicao: "Rede Mãos Amigas",
+    instituicao: "Espaço Recomeço",
     bairro: "Cordeiro",
-    categoria: "Roupas",
+    categoria: "Voluntariado",
     prioridade: "Média",
-    itens: ["Camisetas", "Calças", "Agasalhos"],
-    descricao: "Arrecadação demonstrativa de roupas em boas condições."
+    itens: ["Instrutor de costura", "Instrutor de panificação", "Instrutor de informática"],
+    descricao: "Instrutores voluntários para oficinas de geração de renda."
   },
   {
     id: 5,
     instituicaoId: 5,
-    instituicao: "Espaço Recomeçar",
-    bairro: "Boa Viagem",
-    categoria: "Outros",
-    prioridade: "Baixa",
-    itens: ["Cadernos", "Lápis", "Mochilas"],
-    descricao: "Materiais escolares para atividades socioeducativas."
+    instituicao: "Ponto de Higiene Dignidade",
+    bairro: "Boa Vista",
+    categoria: "Higiene",
+    prioridade: "Alta",
+    itens: ["Toalhas", "Sabonete", "Escova de dente", "Roupas íntimas novas"],
+    descricao: "Itens de higiene para o banho e os kits entregues às pessoas atendidas."
   },
   {
     id: 6,
     instituicaoId: 6,
-    instituicao: "Projeto Viver Melhor",
-    bairro: "Casa Amarela",
+    instituicao: "Abrigo Frei Caneca",
+    bairro: "Santo Amaro",
+    categoria: "Roupas",
+    prioridade: "Baixa",
+    itens: ["Roupas", "Calçados"],
+    descricao: "Doações entregues na recepção, das 8h às 17h."
+  },
+  {
+    id: 7,
+    instituicaoId: 7,
+    instituicao: "Clínica Solidária Cuidar",
+    bairro: "Imbiribeira",
+    categoria: "Outros",
+    prioridade: "Média",
+    itens: ["Medicamentos (dentro da validade)", "Gaze", "Material de curativo"],
+    descricao: "Medicamentos e materiais para consultas básicas e curativos."
+  },
+  {
+    id: 8,
+    instituicaoId: 8,
+    instituicao: "Casa Mãos Abertas",
+    bairro: "Cordeiro",
+    categoria: "Outros",
+    prioridade: "Alta",
+    itens: ["Fraldas", "Material escolar", "Roupas infantis"],
+    descricao: "Itens para mulheres acolhidas e seus filhos."
+  },
+  {
+    id: 9,
+    instituicaoId: 9,
+    instituicao: "Cozinha Comunitária Sabor da Rua",
+    bairro: "Boa Vista",
     categoria: "Alimentos",
     prioridade: "Alta",
-    itens: ["Macarrão", "Óleo", "Farinha"],
-    descricao: "Doações demonstrativas para ações de assistência alimentar."
+    itens: ["Arroz", "Feijão", "Óleo", "Legumes"],
+    descricao: "Alimentos para as refeições quentes e as marmitas distribuídas à noite."
   }
 ];
 
@@ -172,8 +207,9 @@ function criarCard(necessidade) {
     "Conhecer instituição"
   );
 
+  // Abre a janela de detalhes da instituição na página de instituições
   botao.href =
-    `instituicao.html?id=${encodeURIComponent(necessidade.instituicaoId)}`;
+    `instituicoes.html#inst-${encodeURIComponent(necessidade.instituicaoId)}`;
 
   const seta = criarElemento("i", "fa-solid fa-arrow-right");
   botao.appendChild(seta);

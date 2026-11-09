@@ -186,6 +186,68 @@ a {
   background: var(--primary-dark);
 }
 
+/* ---------- Divisor com texto ("Ainda não tem conta?") ---------- */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ---------- Botão secundário (mesmo tamanho do .btn-login) ---------- */
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  border: 1.5px solid var(--primary);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.btn-secondary:focus-visible,
+.btn-login:focus-visible {
+  outline: 3px solid rgba(6, 61, 168, 0.35);
+  outline-offset: 2px;
+}
+
+/* ---------- Link de texto (usado em "Já tem cadastro? Entrar") ---------- */
+.alt-link {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.alt-link a {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.alt-link a:hover {
+  text-decoration: underline;
+}
+
 .demo-text {
   margin-top: 22px;
   color: var(--muted);

@@ -1,0 +1,308 @@
+/* ============================================================
+   cadastro.css
+   Carregar DEPOIS do login.css. Usa as variáveis dele:
+   --primary, --primary-dark, --primary-light, --background,
+   --white, --text, --muted, --border.
+   (.login-divider e .alt-link ficam no login.css, compartilhados.)
+   ============================================================ */
+
+:root {
+  --erro: #c62828;
+  --erro-light: #fdecec;
+  --sucesso: #2e7d32;
+  --aviso: #ef8f00;
+}
+
+/* ---------- Card mais largo ---------- */
+.cadastro-card {
+  max-width: 720px;
+  padding: 42px;
+}
+
+.cadastro-card .login-header {
+  margin-bottom: 28px;
+}
+
+.cadastro-card .login-header p {
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+/* ---------- Seções em painéis ---------- */
+.form-section {
+  margin-bottom: 20px;
+  padding: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  color: var(--primary-dark);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.section-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 14px;
+}
+
+/* ---------- Grids ---------- */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.form-row--cep {
+  grid-template-columns: 170px 1fr;
+}
+
+.form-row--numero {
+  grid-template-columns: 100px 1fr 1fr;
+}
+
+/* o último campo de cada painel não precisa de margem extra */
+.form-section > .form-group:last-child,
+.form-section > .form-row:last-child .form-group {
+  margin-bottom: 0;
+}
+
+/* ---------- Inputs: foco e estados ---------- */
+.input-group {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group:focus-within {
+  box-shadow: 0 0 0 4px rgba(6, 61, 168, 0.1);
+}
+
+.input-group.is-valid {
+  border-color: #8fc9a0;
+}
+
+.input-group.is-invalid,
+.input-group.is-invalid:focus-within {
+  border-color: var(--erro);
+  box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+}
+
+.input-group.is-invalid > i {
+  color: var(--erro);
+}
+
+/* ---------- Select e textarea (o login.css só estiliza <input>) ---------- */
+.input-group select,
+.input-group textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.input-group select {
+  height: 100%;
+  padding-right: 22px;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2365748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+}
+
+.input-group select:invalid {
+  color: #9ca8b8;
+}
+
+.input-group select option {
+  color: var(--text);
+}
+
+/* O .input-group tem altura fixa de 50px; no textarea ela precisa crescer */
+.input-group--textarea {
+  height: auto;
+  align-items: flex-start;
+  padding: 14px;
+}
+
+.input-group--textarea textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.input-group--textarea textarea::placeholder {
+  color: #9ca8b8;
+}
+
+/* ---------- Mensagens de erro ---------- */
+.field-error {
+  display: block;
+  margin-top: 6px;
+  color: var(--erro);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.field-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.char-count {
+  margin-top: 6px;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ---------- Força da senha ---------- */
+.strength {
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.strength-bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--erro);
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.strength-bar[data-nivel="1"] { width: 25%;  background: var(--erro); }
+.strength-bar[data-nivel="2"] { width: 50%;  background: var(--aviso); }
+.strength-bar[data-nivel="3"] { width: 75%;  background: #7cb342; }
+.strength-bar[data-nivel="4"] { width: 100%; background: var(--sucesso); }
+
+.strength-text {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.strength-text:empty {
+  display: none;
+}
+
+/* ---------- Termos ---------- */
+.form-check {
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* .form-group label (do login.css) tem prioridade sobre .check-label; este seletor é mais específico */
+.form-check .check-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.form-check .check-label input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* ---------- Feedback e botão ---------- */
+.login-feedback.is-success {
+  padding: 12px;
+  border-radius: 8px;
+  background: #e8f5e9;
+  color: var(--sucesso);
+  font-weight: 700;
+}
+
+.cadastro-card .btn-login {
+  min-height: 52px;
+  box-shadow: 0 8px 20px rgba(6, 61, 168, 0.2);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.cadastro-card .btn-login:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(6, 61, 168, 0.28);
+}
+
+.cadastro-card .btn-login:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Acessibilidade ---------- */
+.btn-login:focus-visible,
+.toggle-password:focus-visible,
+.alt-link a:focus-visible,
+.back-link:focus-visible,
+.check-label input:focus-visible {
+  outline: 3px solid rgba(6, 61, 168, 0.35);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cadastro-card .btn-login,
+  .strength-bar,
+  .input-group {
+    transition: none;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .cadastro-card {
+    padding: 28px 18px;
+  }
+
+  .form-section {
+    padding: 18px 16px;
+  }
+
+  .form-row,
+  .form-row--cep,
+  .form-row--numero {
+    grid-template-columns: 1fr;
+  }
+
+  /* empilhado: o último campo mantém o espaço entre os campos de cima */
+  .form-section > .form-row:last-child .form-group:not(:last-child) {
+    margin-bottom: 22px;
+  }
+}

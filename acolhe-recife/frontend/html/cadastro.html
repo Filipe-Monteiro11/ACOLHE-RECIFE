@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cadastro | ABRICIFE</title>
+
+  <!-- login.css = base (variáveis, card, inputs, botão). cadastro.css = só o que é específico do cadastro. -->
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/cadastro.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+  <script src="../js/cadastro.js" defer></script>
+</head>
+
+<body>
+  <main class="login-page">
+    <section class="login-card cadastro-card">
+
+      <div class="login-brand">
+        <a href="index.html">
+          <img src="../assets/img/logo.png" alt="Acolhe Recife">
+        </a>
+      </div>
+
+      <div class="login-header">
+        <div class="login-icon">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+        </div>
+
+        <h1>Cadastre sua instituição</h1>
+        <p>Preencha os dados abaixo para começar a receber doações.</p>
+      </div>
+
+      <form id="cadastro-form" novalidate>
+
+        <!-- Sobre a instituição -->
+        <section class="form-section" aria-labelledby="titulo-instituicao">
+          <h2 class="section-title" id="titulo-instituicao">
+            <span class="section-icon"><i class="fa-solid fa-building-columns"></i></span>
+            Sobre a instituição
+          </h2>
+
+          <div class="form-group">
+            <label for="nome">Nome da instituição</label>
+            <div class="input-group">
+              <i class="fa-solid fa-building-columns"></i>
+              <input type="text" id="nome" name="nome" placeholder="Nome completo ou razão social"
+                     autocomplete="organization" required>
+            </div>
+            <small class="field-error" id="erro-nome"></small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cnpj">CNPJ</label>
+              <div class="input-group">
+                <i class="fa-regular fa-id-card"></i>
+                <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00"
+                       inputmode="numeric" maxlength="18" required>
+              </div>
+              <small class="field-error" id="erro-cnpj"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="categoria">Área de atuação</label>
+              <div class="input-group">
+                <i class="fa-solid fa-tags"></i>
+                <select id="categoria" name="categoria" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Alimentação</option>
+                  <option>Saúde</option>
+                  <option>Educação</option>
+                  <option>Crianças e adolescentes</option>
+                  <option>Idosos</option>
+                  <option>Pessoas em situação de rua</option>
+                  <option>Animais</option>
+                  <option>Meio ambiente</option>
+                  <option>Outros</option>
+                </select>
+              </div>
+              <small class="field-error" id="erro-categoria"></small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <div class="input-group input-group--textarea">
+              <textarea id="descricao" name="descricao" rows="4" maxlength="400"
+                        placeholder="Conte quem vocês atendem e como as doações ajudam."
+                        required></textarea>
+            </div>
+            <div class="field-meta">
+              <small class="field-error" id="erro-descricao"></small>
+              <small class="char-count"><span id="contador">0</span>/400</small>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contato -->
+        <section class="form-section" aria-labelledby="titulo-contato">
+          <h2 class="section-title" id="titulo-contato">
+            <span class="section-icon"><i class="fa-solid fa-address-book"></i></span>
+            Contato
+          </h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="telefone">Telefone / WhatsApp</label>
+              <div class="input-group">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="telefone" name="telefone" placeholder="(81) 99999-9999"
+                       autocomplete="tel" inputmode="numeric" maxlength="15" required>
+              </div>
+              <small class="field-error" id="erro-telefone"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="responsavel">Responsável</label>
+              <div class="input-group">
+                <i class="fa-regular fa-user"></i>
+                <input type="text" id="responsavel" name="responsavel"
+                       placeholder="Nome de quem cadastra" autocomplete="name" required>
+              </div>
+              <small class="field-error" id="erro-responsavel"></small>
+            </div>
+          </div>
+        </section>
+
+        <!-- Endereço -->
+        <section class="form-section" aria-labelledby="titulo-endereco">
+          <h2 class="section-title" id="titulo-endereco">
+            <span class="section-icon"><i class="fa-solid fa-location-dot"></i></span>
+            Endereço
+          </h2>
+
+          <div class="form-row form-row--cep">
+            <div class="form-group">
+              <label for="cep">CEP</label>
+              <div class="input-group">
+                <i class="fa-solid fa-magnifying-glass-location"></i>
+                <input type="text" id="cep" name="cep" placeholder="00000-000"
+                       inputmode="numeric" maxlength="9" autocomplete="postal-code" required>
+              </div>
+              <small class="field-error" id="erro-cep"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="rua">Rua</label>
+              <div class="input-group">
+                <i class="fa-solid fa-road"></i>
+                <input type="text" id="rua" name="rua" placeholder="Rua, avenida..."
+                       autocomplete="address-line1" required>
+              </div>
+              <small class="field-error" id="erro-rua"></small>
+            </div>
+          </div>
+
+          <div class="form-row form-row--numero">
+            <div class="form-group">
+              <label for="numero">Número</label>
+              <div class="input-group">
+                <i class="fa-solid fa-hashtag"></i>
+                <input type="text" id="numero" name="numero" placeholder="Nº" required>
+              </div>
+              <small class="field-error" id="erro-numero"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="bairro">Bairro</label>
+              <div class="input-group">
+                <i class="fa-solid fa-map"></i>
+                <input type="text" id="bairro" name="bairro" placeholder="Bairro" required>
+              </div>
+              <small class="field-error" id="erro-bairro"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="cidade">Cidade</label>
+              <div class="input-group">
+                <i class="fa-solid fa-city"></i>
+                <input type="text" id="cidade" name="cidade" placeholder="Cidade" required>
+              </div>
+              <small class="field-error" id="erro-cidade"></small>
+            </div>
+          </div>
+        </section>
+
+        <!-- Acesso -->
+        <section class="form-section" aria-labelledby="titulo-acesso">
+          <h2 class="section-title" id="titulo-acesso">
+            <span class="section-icon"><i class="fa-solid fa-key"></i></span>
+            Acesso ao painel
+          </h2>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <div class="input-group">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="Digite seu e-mail"
+                     autocomplete="username" required>
+            </div>
+            <small class="field-error" id="erro-email"></small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="senha">Senha</label>
+              <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="senha" name="senha" placeholder="Mínimo de 8 caracteres"
+                       autocomplete="new-password" required>
+                <button type="button" class="toggle-password" data-target="senha"
+                        aria-label="Mostrar senha">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="strength" aria-hidden="true">
+                <span class="strength-bar" id="strength-bar"></span>
+              </div>
+              <small class="strength-text" id="strength-text"></small>
+              <small class="field-error" id="erro-senha"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmar-senha">Confirmar senha</label>
+              <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="confirmar-senha" name="confirmar-senha"
+                       placeholder="Repita a senha" autocomplete="new-password" required>
+                <button type="button" class="toggle-password" data-target="confirmar-senha"
+                        aria-label="Mostrar senha">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <small class="field-error" id="erro-confirmar-senha"></small>
+            </div>
+          </div>
+        </section>
+
+        <div class="form-check">
+          <label class="check-label" for="termos">
+            <input type="checkbox" id="termos" name="termos" required>
+            <span>Declaro que as informações são verdadeiras e aceito os termos de uso.</span>
+          </label>
+          <small class="field-error" id="erro-termos"></small>
+        </div>
+
+        <p id="cadastro-feedback" class="login-feedback" role="alert"></p>
+
+        <button type="submit" class="btn-login">
+          Criar conta
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="login-divider">
+        <span>ou</span>
+      </div>
+
+      <p class="alt-link">
+        Já tem cadastro? <a href="login.html">Entrar</a>
+      </p>
+
+      <p class="demo-text">
+        Protótipo acadêmico — os dados ficam salvos apenas neste navegador.
+      </p>
+
+      <a href="index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar para o início
+      </a>
+
+    </section>
+  </main>
+</body>
+</html>
