@@ -401,6 +401,223 @@
   flex-shrink: 0;
 }
 
+/* JANELA "VER DETALHES" */
+
+body.help-travado {
+  overflow: hidden;
+}
+
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 35, 65, 0.6);
+}
+
+.help-modal[hidden] {
+  display: none;
+}
+
+.help-modal__panel {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: 34px;
+  overflow-y: auto;
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+}
+
+.help-modal__panel:focus {
+  outline: none;
+}
+
+.help-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.help-modal__close:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.help-modal__close:focus-visible,
+.help-btn:focus-visible,
+.help-modal__lista a:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.help-modal__tipo {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 11px;
+  border-radius: 30px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.help-modal__panel h2 {
+  margin-bottom: 10px;
+  padding-right: 40px;
+  color: var(--primary-dark);
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.2;
+}
+
+.help-modal__desc {
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.help-modal__panel .help-service-tags {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.help-modal__lista {
+  margin: 0 0 20px;
+  border-top: 1px solid var(--border);
+}
+
+.help-modal__row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.help-modal__row dt {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.help-modal__row dt i {
+  width: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: var(--primary);
+  text-align: center;
+}
+
+.help-modal__row dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.help-modal__row dd small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.help-modal__row dd a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.help-modal__row dd a:hover {
+  text-decoration: underline;
+}
+
+.help-modal__aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 13px 15px;
+  border: 1px solid #cfe2ff;
+  border-radius: 10px;
+  background: #eaf4ff;
+  color: #345783;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.help-modal__aviso i {
+  margin-top: 2px;
+}
+
+.help-modal__fonte {
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-size: 11px;
+  font-style: italic;
+}
+
+.help-modal__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.help-btn--primary {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.help-btn--primary:hover {
+  border-color: var(--primary-dark);
+  background: var(--primary-dark);
+}
+
+.help-btn--outline {
+  background: transparent;
+  color: var(--primary);
+}
+
+.help-btn--outline:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
 /* RESPONSIVIDADE */
 
 @media (max-width: 1100px) {
@@ -471,6 +688,33 @@
   }
 
   .help-guidance .btn-primary {
+    width: 100%;
+  }
+
+  /* janela "ver detalhes" */
+
+  .help-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .help-modal__panel {
+    width: 100%;
+    max-height: 92vh;
+    padding: 28px 20px 22px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .help-modal__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .help-modal__acoes {
+    flex-direction: column;
+  }
+
+  .help-btn {
     width: 100%;
   }
 }
