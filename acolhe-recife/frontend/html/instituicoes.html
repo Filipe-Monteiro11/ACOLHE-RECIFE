@@ -2,46 +2,30 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#063da8">
-  <meta
-    name="description"
-    content="Encontre instituições de acolhimento no Recife por nome, bairro e tipo de serviço."
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instituições | ABRICIFE</title>
 
-  <title>Instituições | Acolhe Recife</title>
-
-  <!-- CSS global (somente leitura) + CSS exclusivo desta página -->
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/instituicoes.css">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-  >
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <script src="../js/main.js" defer></script>
-  <script src="../js/instituicoes.js" defer></script>
+  <script src="../js/dados.js" defer></script>
+  <script src="../js/catalogo.js" defer></script>
 </head>
-
 <body>
   <header class="header">
     <div class="header-container">
-      <a href="index.html" class="logo" aria-label="Acolhe Recife - Início">
-        <img src="../assets/img/logo.png" alt="Acolhe Recife">
+      <a href="index.html" class="logo">
+        <img src="../assets/img/logo.png" alt="ABRICIFE">
       </a>
 
-      <button
-        class="menu-toggle"
-        id="menu-toggle"
-        type="button"
-        aria-label="Abrir menu"
-        aria-expanded="false"
-        aria-controls="menu"
-      >
+      <button class="menu-toggle" id="menu-toggle"
+        type="button" aria-label="Abrir menu"
+        aria-expanded="false" aria-controls="menu">
         <i class="fa-solid fa-bars"></i>
       </button>
 
-      <nav class="menu" id="menu" aria-label="Navegação principal">
+      <nav class="menu" id="menu">
         <a href="index.html">Início</a>
         <a href="preciso-ajuda.html">Preciso de ajuda</a>
         <a href="quero-ajudar.html">Quero ajudar</a>
@@ -51,91 +35,58 @@
 
       <a href="login.html" class="btn-instituicao">
         <i class="fa-solid fa-building-columns"></i>
-        <span>Área da instituição</span>
+        Área da instituição
       </a>
     </div>
   </header>
 
-  <main class="inst-main">
-
-    <!-- APRESENTAÇÃO -->
-    <section class="inst-intro">
-      <div class="inst-intro__content">
-        <span class="inst-eyebrow">
-          <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
-          REDE DE ACOLHIMENTO DO RECIFE
-        </span>
-
-        <h1>
-          Instituições que
-          <span>acolhem no Recife.</span>
-        </h1>
-
-        <p>
-          Pesquise pelo nome ou filtre por bairro e tipo de serviço
-          para encontrar o apoio mais perto de você.
-        </p>
-
-        <a href="#inst-busca" class="inst-hero-button">
-          Encontrar instituições
-          <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
-        </a>
-      </div>
-
-      <div class="inst-intro__illustration" aria-hidden="true">
-        <div class="inst-intro__circle">
-          <i class="fa-solid fa-people-roof"></i>
-        </div>
-      </div>
+  <main>
+    <section class="page-hero">
+      <span class="section-label">REDE DE APOIO</span>
+      <h1>Instituições no Recife</h1>
+      <p>Encontre organizações e serviços públicos de atendimento à população em situação de vulnerabilidade.</p>
     </section>
 
-    <section class="inst-container" id="inst-busca" aria-label="Busca e filtros">
-      <form class="inst-filters" id="inst-form" role="search">
-        <div class="inst-field">
-          <label for="inst-nome">Nome da instituição</label>
-          <input type="search" id="inst-nome" name="nome" placeholder="Ex.: Casa de Apoio" autocomplete="off">
+    <section class="institutions" id="instituicoes">
+      <form class="search-form catalog-search" id="search-form">
+        <div class="input-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="search-name"
+            placeholder="Nome da instituição"
+            aria-label="Nome da instituição">
         </div>
 
-        <div class="inst-field">
-          <label for="inst-bairro">Bairro</label>
-          <select id="inst-bairro" name="regiao">
-            <option value="">Todos os bairros</option>
-          </select>
-        </div>
+        <select id="search-region" aria-label="Filtrar por bairro">
+          <option value="">Todos os bairros</option>
+        </select>
 
-        <button type="button" class="inst-btn inst-btn--outline" id="inst-limpar">
-          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-          Limpar filtros
+        <select id="search-service" aria-label="Filtrar por serviço">
+          <option value="">Todos os serviços</option>
+        </select>
+
+        <button type="submit" class="btn-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Buscar
         </button>
-
-        <fieldset class="inst-services">
-          <legend>Tipo de serviço</legend>
-          <div class="inst-chips" id="inst-chips"></div>
-        </fieldset>
       </form>
 
-      <p class="inst-count" id="inst-count" role="status" aria-live="polite"></p>
+      <p id="search-feedback" class="search-feedback" role="status"></p>
+      <div id="lista-instituicoes" class="institution-list"></div>
 
-      <div class="inst-grid" id="inst-grid"></div>
-
-      <div class="inst-empty" id="inst-empty" hidden>
-        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-        <h2>Nenhuma instituição encontrada</h2>
-        <p>Tente buscar por outro nome ou remover algum filtro.</p>
-        <button type="button" class="inst-btn inst-btn--primary" id="inst-limpar-vazio">Limpar filtros</button>
-      </div>
+      <p class="notice">
+        As instituições e os serviços listados são reais, mas sua presença
+        no catálogo não representa parceria oficial com o ABRICIFE,
+        disponibilidade imediata ou aceitação de doações.
+        Confirme as informações diretamente com os responsáveis.
+      </p>
     </section>
   </main>
 
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">
-        <img src="../assets/img/logo.png" alt="Acolhe Recife">
-
-        <p>
-          Acolhimento que aproxima.<br>
-          Ajuda que transforma.
-        </p>
+        <img src="../assets/img/logo.png" alt="ABRICIFE">
+        <p>Acolhimento que aproxima. Ajuda que transforma.</p>
       </div>
 
       <div class="footer-links">
@@ -146,19 +97,13 @@
         <a href="instituicoes.html">Instituições</a>
       </div>
 
-      <div class="footer-about">
+      <div>
         <h3>Sobre o projeto</h3>
-        <p>
-          Uma plataforma para conectar pessoas
-          que precisam de ajuda a instituições
-          de acolhimento no Recife.
-        </p>
+        <p>Projeto acadêmico de apoio e informação social no Recife.</p>
       </div>
     </div>
 
-    <div class="copyright">
-      © 2026 Acolhe Recife — Projeto acadêmico
-    </div>
+    <div class="copyright">© 2026 ABRICIFE — Projeto acadêmico</div>
   </footer>
 </body>
 </html>

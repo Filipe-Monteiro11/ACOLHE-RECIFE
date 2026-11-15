@@ -64,21 +64,23 @@ img {
 
 .header-container {
   width: min(1400px, 92%);
-  min-height: 88px;
+  min-height: 100px;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
+  gap: 20px;
 }
 
 .logo {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 
 .logo img {
-  width: 165px;
-  max-height: 65px;
+  width: 230px;
+  max-height: 85px;
   object-fit: contain;
 }
 
@@ -86,7 +88,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(15px, 2vw, 35px);
+  gap: clamp(12px, 1.7vw, 30px);
   flex: 1;
 }
 
@@ -660,8 +662,13 @@ img {
 /* RESPONSIVIDADE */
 
 @media (max-width: 1200px) {
+  .logo img {
+    width: 190px;
+    max-height: 75px;
+  }
+
   .menu {
-    gap: 15px;
+    gap: 12px;
   }
 
   .menu a {
@@ -730,11 +737,13 @@ img {
 @media (max-width: 600px) {
   .header-container {
     width: 92%;
+    min-height: 85px;
     gap: 12px;
   }
 
   .logo img {
-    width: 125px;
+    width: 160px;
+    max-height: 65px;
   }
 
   .btn-instituicao {

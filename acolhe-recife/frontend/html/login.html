@@ -2,101 +2,79 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área da instituição | ABRICIFE</title>
 
-  <title>Login | ABRICIFE</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <link rel="stylesheet" href="../css/login.css">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-  >
-  <script src="../js/login.js" defer></script>
+  <script src="../js/catalogo.js" defer></script>
 </head>
-
 <body>
-  <main class="login-page">
-    <section class="login-card">
-
-      <div class="login-brand">
-        <a href="index.html">
-          <img src="../assets/img/logo.png" alt="Acolhe Recife">
-        </a>
-      </div>
-
-      <div class="login-header">
-        <div class="login-icon">
-          <i class="fa-solid fa-building-columns"></i>
-        </div>
-
-        <h1>Área da Instituição</h1>
-        <p>Entre com seus dados para acessar o painel.</p>
-      </div>
-
-      <form id="login-form" novalidate>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <div class="input-group">
-            <i class="fa-regular fa-envelope"></i>
-            <input
-              type="email"
-              id="email"
-              placeholder="Digite seu e-mail"
-              autocomplete="username"
-              required
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="senha">Senha</label>
-          <div class="input-group">
-            <i class="fa-solid fa-lock"></i>
-            <input
-              type="password"
-              id="senha"
-              placeholder="Digite sua senha"
-              autocomplete="current-password"
-              required
-            >
-            <button
-              type="button"
-              id="toggle-password"
-              class="toggle-password"
-              aria-label="Mostrar senha"
-            >
-              <i class="fa-regular fa-eye"></i>
-            </button>
-          </div>
-        </div>
-
-        <p id="login-feedback" class="login-feedback" role="alert"></p>
-
-        <button type="submit" class="btn-login">
-          Entrar
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </form>
-
-      <div class="login-divider">
-        <span>Ainda não tem conta?</span>
-      </div>
-
-      <a href="cadastro.html" class="btn-secondary">
-        <i class="fa-solid fa-building-circle-check"></i>
-        Cadastrar minha instituição
+  <header class="header">
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <img src="../assets/img/logo.png" alt="ABRICIFE">
       </a>
 
-      <p class="demo-text">
-        Protótipo acadêmico — acesso demonstrativo.
+      <button class="menu-toggle" id="menu-toggle"
+        type="button" aria-label="Abrir menu"
+        aria-expanded="false" aria-controls="menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <nav class="menu" id="menu">
+        <a href="index.html">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html">Quero ajudar</a>
+        <a href="instituicoes.html">Instituições</a>
+        <a href="sobre.html">Sobre o projeto</a>
+      </nav>
+
+      <a href="login.html" class="btn-instituicao">
+        Área da instituição
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="detail">
+      <span class="section-label">ACESSO INSTITUCIONAL</span>
+      <h1>Área da instituição</h1>
+
+      <p>
+        O acesso administrativo ainda está em desenvolvimento.
+        Não informe credenciais reais nesta versão demonstrativa.
       </p>
 
-      <a href="index.html" class="back-link">
-        <i class="fa-solid fa-arrow-left"></i>
-        Voltar para o início
+      <a href="index.html" class="btn-secondary">
+        Voltar ao início
       </a>
-
     </section>
   </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h3>ABRICIFE</h3>
+        <p>Conectando pessoas a informações sobre a rede de apoio no Recife.</p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Navegação</h3>
+        <a href="index.html">Início</a>
+        <a href="instituicoes.html">Instituições</a>
+        <a href="sobre.html">Sobre</a>
+      </div>
+
+      <div>
+        <h3>Informação responsável</h3>
+        <p>O acesso administrativo ainda não está disponível.</p>
+      </div>
+    </div>
+
+    <p class="copyright">ABRICIFE — Projeto acadêmico</p>
+  </footer>
 </body>
 </html>
