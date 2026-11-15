@@ -1,280 +1,164 @@
-const instituicoes = [
-  {
-    id: "1",
-    nome: "Centro Esperança",
-    bairro: "Boa Vista",
-    necessidades: ["Alimentos", "Roupas", "Produtos de higiene"]
-  },
-  {
-    id: "2",
-    nome: "Casa de Apoio Solidário",
-    bairro: "Santo Amaro",
-    necessidades: ["Alimentos", "Produtos de higiene"]
-  },
-  {
-    id: "3",
-    nome: "Instituto Novos Caminhos",
-    bairro: "Imbiribeira",
-    necessidades: ["Materiais escolares", "Roupas"]
-  },
-  {
-    id: "4",
-    nome: "Rede Mãos Amigas",
-    bairro: "Cordeiro",
-    necessidades: ["Alimentos", "Roupas", "Produtos de higiene"]
-  },
-  {
-    id: "5",
-    nome: "Espaço Recomeçar",
-    bairro: "Boa Viagem",
-    necessidades: ["Materiais escolares", "Produtos de higiene"]
-  },
-  {
-    id: "6",
-    nome: "Projeto Viver Melhor",
-    bairro: "Casa Amarela",
-    necessidades: ["Alimentos", "Materiais escolares"]
-  }
-];
+const API_URL = "http://127.0.0.1:5000/api";
 
-const menuToggle = document.getElementById("menu-toggle");
-const menu = document.getElementById("menu");
+const $ = (id) => document.getElementById(id);
 
-const form = document.getElementById("donation-form");
-const progressItems = document.querySelectorAll(".progress-item");
-const formSteps = document.querySelectorAll(".form-step");
+const form = $("donation-form");
+const institutionSelect = $("institution");
+const donationType = $("donation-type");
+const formError = $("form-error");
 
-const institutionSelect = document.getElementById("institution");
-const institutionDetails = document.getElementById("institution-details");
-const institutionName = document.getElementById("institution-name");
-const institutionLocation = document.getElementById("institution-location");
-const acceptedDonations = document.getElementById("accepted-donations");
-
-const donationType = document.getElementById("donation-type");
-const donorName = document.getElementById("donor-name");
-const donorPhone = document.getElementById("donor-phone");
-const donationQuantity = document.getElementById("donation-quantity");
-const donationDescription = document.getElementById("donation-description");
-const donationObservations = document.getElementById("donation-observations");
-
-const deliveryRadios = document.querySelectorAll(
-  'input[name="deliveryMethod"]'
-);
-
-const directDelivery = document.getElementById("direct-delivery");
-const pickupDelivery = document.getElementById("pickup-delivery");
-const directInstitutionName = document.getElementById(
-  "direct-institution-name"
-);
-
-const pickupCep = document.getElementById("pickup-cep");
-const pickupNeighborhood = document.getElementById("pickup-neighborhood");
-const pickupStreet = document.getElementById("pickup-street");
-const pickupNumber = document.getElementById("pickup-number");
-const pickupReference = document.getElementById("pickup-reference");
-
-const previousButton = document.getElementById("previous-step");
-const nextButton = document.getElementById("next-step");
-const submitButton = document.getElementById("submit-donation");
-const formError = document.getElementById("form-error");
-const donationSummary = document.getElementById("donation-summary");
-const donationConsent = document.getElementById("donation-consent");
-
-const donationSuccess = document.getElementById("donation-success");
-const successSummary = document.getElementById("success-summary");
-const newDonationButton = document.getElementById("new-donation");
-
+let instituicoes = [];
 let currentStep = 1;
+
+const menuToggle = $("menu-toggle");
+const menu = $("menu");
 
 if (menuToggle && menu) {
   menuToggle.addEventListener("click", () => {
-    const open = menu.classList.toggle("open");
+    const aberto = menu.classList.toggle("open");
 
-    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-expanded", String(aberto));
     menuToggle.setAttribute(
       "aria-label",
-      open ? "Fechar menu" : "Abrir menu"
+      aberto ? "Fechar menu" : "Abrir menu"
     );
   });
 }
 
-function getInstitution() {
+function mostrarErro(mensagem) {
+  formError.textContent = mensagem;
+  formError.hidden = false;
+}
+
+function limparErro() {
+  formError.textContent = "";
+  formError.hidden = true;
+}
+
+function instituicaoAtual() {
   return instituicoes.find(
-    (instituicao) => instituicao.id === institutionSelect.value
+    (item) => String(item.id) === institutionSelect.value
   );
 }
 
-function getDeliveryMethod() {
+function formaEntrega() {
   return document.querySelector(
     'input[name="deliveryMethod"]:checked'
   ).value;
 }
 
-function showError(message) {
-  formError.textContent = message;
-  formError.hidden = false;
+async function carregarInstituicoes() {
+  institutionSelect.disabled = true;
+
+  try {
+    const resposta = await fetch(`${API_URL}/instituicoes`);
+
+    if (!resposta.ok) {
+      throw new Error("Não foi possível carregar as instituições.");
+    }
+
+    instituicoes = await resposta.json();
+
+    institutionSelect.replaceChildren(
+      new Option("Selecione uma instituição", "")
+    );
+
+    instituicoes.forEach((item) => {
+      institutionSelect.add(
+        new Option(item.nome, String(item.id))
+      );
+    });
+
+    institutionSelect.disabled = false;
+    atualizarInstituicao();
+  } catch (erro) {
+    mostrarErro(
+      "Não foi possível conectar ao servidor. Verifique se a API está funcionando."
+    );
+  }
 }
 
-function clearError() {
-  formError.textContent = "";
-  formError.hidden = true;
-}
+function atualizarInstituicao() {
+  const instituicao = instituicaoAtual();
 
-function populateInstitutions() {
-  instituicoes.forEach((instituicao) => {
-    const option = document.createElement("option");
+  $("institution-details").hidden = !instituicao;
+  $("accepted-donations").replaceChildren();
 
-    option.value = instituicao.id;
-    option.textContent = instituicao.nome;
-
-    institutionSelect.appendChild(option);
-  });
-}
-
-function updateInstitution() {
-  const instituicao = getInstitution();
-
-  institutionDetails.hidden = !instituicao;
-  donationType.replaceChildren();
-
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "Selecione o tipo";
-
-  donationType.appendChild(defaultOption);
-  acceptedDonations.replaceChildren();
+  donationType.replaceChildren(
+    new Option("Selecione o tipo", "")
+  );
 
   if (!instituicao) {
-    directInstitutionName.textContent = "";
+    $("direct-institution-name").textContent = "";
     return;
   }
 
-  institutionName.textContent = instituicao.nome;
-  institutionLocation.textContent = `${instituicao.bairro}, Recife - PE`;
-  directInstitutionName.textContent = instituicao.nome;
+  $("institution-name").textContent = instituicao.nome;
+  $("institution-location").textContent =
+    `${instituicao.bairro}, Recife - PE`;
+
+  $("direct-institution-name").textContent = instituicao.nome;
 
   instituicao.necessidades.forEach((necessidade) => {
+    donationType.add(new Option(necessidade, necessidade));
+
     const item = document.createElement("span");
     item.className = "accepted-item";
 
-    const icon = document.createElement("i");
-    icon.className = "fa-solid fa-circle-check";
+    const icone = document.createElement("i");
+    icone.className = "fa-solid fa-circle-check";
 
-    item.append(icon, document.createTextNode(necessidade));
-    acceptedDonations.appendChild(item);
-
-    const option = document.createElement("option");
-    option.value = necessidade;
-    option.textContent = necessidade;
-
-    donationType.appendChild(option);
+    item.append(icone, document.createTextNode(necessidade));
+    $("accepted-donations").appendChild(item);
   });
 }
 
-function updateDelivery() {
-  const method = getDeliveryMethod();
+function atualizarEntrega() {
+  const coleta = formaEntrega() === "pickup";
 
-  directDelivery.hidden = method !== "direct";
-  pickupDelivery.hidden = method !== "pickup";
+  $("direct-delivery").hidden = coleta;
+  $("pickup-delivery").hidden = !coleta;
 
   document.querySelectorAll(".delivery-card").forEach((card) => {
-    const radio = card.querySelector('input[type="radio"]');
-
-    card.classList.toggle("selected", radio.checked);
+    card.classList.toggle(
+      "selected",
+      card.querySelector("input").checked
+    );
   });
 }
 
-function showStep(step) {
-  currentStep = step;
-  clearError();
+function mostrarEtapa(etapa) {
+  currentStep = etapa;
+  limparErro();
 
-  formSteps.forEach((element) => {
-    element.classList.toggle(
+  document.querySelectorAll(".form-step").forEach((item) => {
+    item.classList.toggle(
       "active",
-      Number(element.dataset.step) === step
+      Number(item.dataset.step) === etapa
     );
   });
 
-  progressItems.forEach((item) => {
-    const number = Number(item.dataset.step);
+  document.querySelectorAll(".progress-item").forEach((item) => {
+    const numero = Number(item.dataset.step);
 
-    item.classList.toggle("active", number === step);
-    item.classList.toggle("completed", number < step);
+    item.classList.toggle("active", numero === etapa);
+    item.classList.toggle("completed", numero < etapa);
   });
 
-  previousButton.hidden = step === 1;
-  nextButton.hidden = step === 4;
-  submitButton.hidden = step !== 4;
+  $("previous-step").hidden = etapa === 1;
+  $("next-step").hidden = etapa === 4;
+  $("submit-donation").hidden = etapa !== 4;
 
-  if (step === 4) {
-    renderSummary(donationSummary);
+  if (etapa === 4) {
+    mostrarResumo($("donation-summary"));
   }
 }
 
-function validateStep() {
-  clearError();
-
-  if (currentStep === 1) {
-    if (!getInstitution()) {
-      showError("Selecione uma instituição para continuar.");
-      institutionSelect.focus();
-      return false;
-    }
-  }
-
-  if (currentStep === 2) {
-    const requiredFields = [
-      donorName,
-      donorPhone,
-      donationType,
-      donationQuantity,
-      donationDescription
-    ];
-
-    for (const field of requiredFields) {
-      if (!field.value.trim()) {
-        showError("Preencha todos os campos obrigatórios.");
-        field.focus();
-        return false;
-      }
-    }
-
-    const phoneDigits = donorPhone.value.replace(/\D/g, "");
-
-    if (phoneDigits.length !== 11) {
-      showError("Informe um celular com DDD e 11 dígitos.");
-      donorPhone.focus();
-      return false;
-    }
-
-    const instituicao = getInstitution();
-
-    if (!instituicao.necessidades.includes(donationType.value)) {
-      showError("Selecione um tipo de doação aceito pela instituição.");
-      donationType.focus();
-      return false;
-    }
-  }
-
-  if (currentStep === 3 && getDeliveryMethod() === "pickup") {
-    const requiredFields = [
-      pickupCep,
-      pickupNeighborhood,
-      pickupStreet,
-      pickupNumber
-    ];
-
-    for (const field of requiredFields) {
-      if (!field.value.trim()) {
-        showError("Preencha os dados obrigatórios da coleta.");
-        field.focus();
-        return false;
-      }
-    }
-
-    if (pickupCep.value.replace(/\D/g, "").length !== 8) {
-      showError("Informe um CEP válido com 8 dígitos.");
-      pickupCep.focus();
+function validarCampos(campos) {
+  for (const campo of campos) {
+    if (!campo.value.trim()) {
+      mostrarErro("Preencha todos os campos obrigatórios.");
+      campo.focus();
       return false;
     }
   }
@@ -282,154 +166,283 @@ function validateStep() {
   return true;
 }
 
-function getDonationData() {
-  const instituicao = getInstitution();
-  const method = getDeliveryMethod();
+function validarEtapa() {
+  limparErro();
 
-  const address = [
-    pickupStreet.value.trim(),
-    pickupNumber.value.trim(),
-    pickupNeighborhood.value.trim(),
-    `CEP ${pickupCep.value.trim()}`,
-    pickupReference.value.trim()
-  ].filter(Boolean).join(", ");
+  if (currentStep === 1) {
+    if (!instituicaoAtual()) {
+      mostrarErro("Selecione uma instituição.");
+      return false;
+    }
 
-  return [
-    ["Instituição", instituicao.nome],
-    ["Bairro da instituição", instituicao.bairro],
-    ["Nome do doador", donorName.value.trim()],
-    ["WhatsApp", donorPhone.value.trim()],
-    ["Tipo de doação", donationType.value],
-    ["Itens", donationDescription.value.trim()],
-    ["Quantidade", donationQuantity.value.trim()],
+    if (!instituicaoAtual().necessidades.length) {
+      mostrarErro("Esta instituição não possui necessidades disponíveis.");
+      return false;
+    }
+  }
+
+  if (currentStep === 2) {
+    if (!validarCampos([
+      $("donor-name"),
+      $("donor-phone"),
+      donationType,
+      $("donation-quantity"),
+      $("donation-description")
+    ])) {
+      return false;
+    }
+
+    const telefone = $("donor-phone").value.replace(/\D/g, "");
+
+    if (telefone.length !== 11) {
+      mostrarErro("Informe um celular com DDD e 11 dígitos.");
+      return false;
+    }
+
+    if (!instituicaoAtual().necessidades.includes(
+      donationType.value
+    )) {
+      mostrarErro("Tipo de doação não aceito pela instituição.");
+      return false;
+    }
+  }
+
+  if (currentStep === 3 && formaEntrega() === "pickup") {
+    if (!validarCampos([
+      $("pickup-cep"),
+      $("pickup-neighborhood"),
+      $("pickup-street"),
+      $("pickup-number")
+    ])) {
+      return false;
+    }
+
+    if ($("pickup-cep").value.replace(/\D/g, "").length !== 8) {
+      mostrarErro("Informe um CEP com 8 dígitos.");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function dadosDoacao() {
+  const coleta = formaEntrega() === "pickup";
+
+  return {
+    instituicao_id: Number(institutionSelect.value),
+    nome: $("donor-name").value.trim(),
+    telefone: $("donor-phone").value.replace(/\D/g, ""),
+    categoria: donationType.value,
+    descricao: $("donation-description").value.trim(),
+    quantidade: $("donation-quantity").value.trim(),
+    observacoes: $("donation-observations").value.trim(),
+    entrega: formaEntrega(),
+    endereco_coleta: coleta ? {
+      cep: $("pickup-cep").value.replace(/\D/g, ""),
+      bairro: $("pickup-neighborhood").value.trim(),
+      rua: $("pickup-street").value.trim(),
+      numero: $("pickup-number").value.trim(),
+      referencia: $("pickup-reference").value.trim()
+    } : null
+  };
+}
+
+function criarLinha(titulo, valor) {
+  const linha = document.createElement("div");
+  linha.className = "summary-row";
+
+  const rotulo = document.createElement("strong");
+  rotulo.textContent = titulo;
+
+  const conteudo = document.createElement("span");
+  conteudo.textContent = valor;
+
+  linha.append(rotulo, conteudo);
+
+  return linha;
+}
+
+function mostrarResumo(container) {
+  const dados = dadosDoacao();
+
+  const linhas = [
+    ["Instituição", instituicaoAtual().nome],
+    ["Doador", dados.nome],
+    ["WhatsApp", dados.telefone],
+    ["Categoria", dados.categoria],
+    ["Itens", dados.descricao],
+    ["Quantidade", dados.quantidade],
+    ["Observações", dados.observacoes || "Nenhuma"],
     [
-      "Observações",
-      donationObservations.value.trim() || "Nenhuma"
-    ],
-    [
-      "Forma de entrega",
-      method === "direct"
-        ? "Entrega diretamente à instituição"
+      "Entrega",
+      dados.entrega === "direct"
+        ? "Entrega direta"
         : "Solicitação de coleta"
-    ],
-    ...(method === "pickup"
-      ? [["Endereço de retirada", address]]
-      : [])
+    ]
   ];
-}
 
-function renderSummary(container) {
-  container.replaceChildren();
+  if (dados.endereco_coleta) {
+    const endereco = dados.endereco_coleta;
 
-  getDonationData().forEach(([label, value]) => {
-    const row = document.createElement("div");
-    row.className = "summary-row";
-
-    const title = document.createElement("strong");
-    title.textContent = label;
-
-    const content = document.createElement("span");
-    content.textContent = value;
-
-    row.append(title, content);
-    container.appendChild(row);
-  });
-}
-
-function formatPhone(value) {
-  const digits = value.replace(/\D/g, "").slice(0, 11);
-
-  if (digits.length <= 2) {
-    return digits ? `(${digits}` : "";
+    linhas.push([
+      "Endereço de coleta",
+      [
+        endereco.rua,
+        endereco.numero,
+        endereco.bairro,
+        endereco.cep,
+        endereco.referencia
+      ].filter(Boolean).join(", ")
+    ]);
   }
 
-  if (digits.length <= 7) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-  }
-
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  container.replaceChildren(
+    ...linhas.map(([titulo, valor]) => criarLinha(titulo, valor))
+  );
 }
 
-function formatCep(value) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-
-  if (digits.length <= 5) {
-    return digits;
+$("next-step").addEventListener("click", () => {
+  if (validarEtapa()) {
+    mostrarEtapa(currentStep + 1);
   }
-
-  return `${digits.slice(0, 5)}-${digits.slice(5)}`;
-}
-
-institutionSelect.addEventListener("change", () => {
-  updateInstitution();
-  clearError();
 });
 
-deliveryRadios.forEach((radio) => {
-  radio.addEventListener("change", updateDelivery);
-});
-
-donorPhone.addEventListener("input", () => {
-  donorPhone.value = formatPhone(donorPhone.value);
-});
-
-pickupCep.addEventListener("input", () => {
-  pickupCep.value = formatCep(pickupCep.value);
-});
-
-nextButton.addEventListener("click", () => {
-  if (!validateStep()) {
-    return;
-  }
-
-  showStep(currentStep + 1);
-});
-
-previousButton.addEventListener("click", () => {
+$("previous-step").addEventListener("click", () => {
   if (currentStep > 1) {
-    showStep(currentStep - 1);
+    mostrarEtapa(currentStep - 1);
   }
 });
 
-form.addEventListener("submit", (event) => {
+institutionSelect.addEventListener("change", atualizarInstituicao);
+
+document.querySelectorAll(
+  'input[name="deliveryMethod"]'
+).forEach((radio) => {
+  radio.addEventListener("change", atualizarEntrega);
+});
+
+$("donor-phone").addEventListener("input", (event) => {
+  const digitos = event.target.value.replace(/\D/g, "").slice(0, 11);
+
+  if (digitos.length <= 2) {
+    event.target.value = digitos ? `(${digitos}` : "";
+  } else if (digitos.length <= 7) {
+    event.target.value =
+      `(${digitos.slice(0, 2)}) ${digitos.slice(2)}`;
+  } else {
+    event.target.value =
+      `(${digitos.slice(0, 2)}) ` +
+      `${digitos.slice(2, 7)}-${digitos.slice(7)}`;
+  }
+});
+
+$("pickup-cep").addEventListener("input", (event) => {
+  const digitos = event.target.value.replace(/\D/g, "").slice(0, 8);
+
+  event.target.value = digitos.length > 5
+    ? `${digitos.slice(0, 5)}-${digitos.slice(5)}`
+    : digitos;
+});
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  clearError();
+  limparErro();
 
   if (currentStep !== 4) {
     return;
   }
 
-  if (!donationConsent.checked) {
-    showError("Confirme as informações antes de continuar.");
-    donationConsent.focus();
+  if (!$("donation-consent").checked) {
+    mostrarErro("Confirme os dados antes de continuar.");
     return;
   }
 
-  renderSummary(successSummary);
+  const botao = $("submit-donation");
+  botao.disabled = true;
+  botao.textContent = "Registrando doação...";
 
-  form.hidden = true;
-  document.querySelector(".donation-progress").hidden = true;
-  donationSuccess.hidden = false;
+  try {
+    const resposta = await fetch(`${API_URL}/doacoes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dadosDoacao())
+    });
+
+    const resultado = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(
+        resultado.erro || "Não foi possível registrar a doação."
+      );
+    }
+
+    const resumo = $("success-summary");
+
+    resumo.replaceChildren(
+      criarLinha("Protocolo", resultado.protocolo),
+      criarLinha("Status", "Pendente"),
+      criarLinha("Instituição", instituicaoAtual().nome)
+    );
+
+    const consulta = document.createElement("p");
+    consulta.className = "donation-consultation";
+
+    const titulo = document.createElement("strong");
+    titulo.textContent = "Código de consulta: ";
+
+    const codigo = document.createElement("span");
+    codigo.textContent = resultado.token_consulta;
+
+    consulta.append(titulo, codigo);
+    resumo.appendChild(consulta);
+
+    const aviso = document.createElement("p");
+    aviso.textContent =
+      "Guarde o protocolo e o código de consulta. " +
+      "Eles serão necessários para acompanhar a solicitação.";
+    resumo.appendChild(aviso);
+
+    form.hidden = true;
+    document.querySelector(".donation-progress").hidden = true;
+    $("donation-success").hidden = false;
+
+    $("donation-success").querySelector("h3").textContent =
+      "Doação registrada com sucesso!";
+
+    $("donation-success").querySelector("h3 + p").textContent =
+      "Sua solicitação foi registrada no sistema. " +
+      "A instituição ainda precisa avaliar a doação. " +
+      "Caso tenha solicitado coleta, o transporte também " +
+      "precisará ser confirmado.";
+
+  } catch (erro) {
+    mostrarErro(erro.message);
+  } finally {
+    botao.disabled = false;
+    botao.innerHTML =
+      '<i class="fa-solid fa-check"></i> Confirmar doação';
+  }
 });
 
-newDonationButton.addEventListener("click", () => {
+$("new-donation").addEventListener("click", () => {
   form.reset();
 
-  donationConsent.checked = false;
-  donationSuccess.hidden = true;
-  form.hidden = false;
+  $("donation-success").hidden = true;
   document.querySelector(".donation-progress").hidden = false;
+  form.hidden = false;
 
-  updateInstitution();
-  updateDelivery();
-  showStep(1);
+  atualizarInstituicao();
+  atualizarEntrega();
+  mostrarEtapa(1);
 
-  document.getElementById("formulario-doacao").scrollIntoView({
+  $("formulario-doacao").scrollIntoView({
     behavior: "smooth"
   });
 });
 
-populateInstitutions();
-updateInstitution();
-updateDelivery();
-showStep(1);
+carregarInstituicoes();
+atualizarEntrega();
+mostrarEtapa(1);

@@ -1,406 +1,392 @@
 import os
-from functools import wraps
+import re
+import secrets
+from datetime import datetime, timezone
 
 from dotenv import load_dotenv
-from flask import Flask, g, jsonify, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_talisman import Talisman
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from werkzeug.exceptions import HTTPException
-
-from classes.usuario import Usuario
-from classes.instituicao import Instituicao
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 
 load_dotenv()
 
-app = Flask(__name__)
+db = SQLAlchemy()
 
-app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024
-app.config["JSON_SORT_KEYS"] = False
-
-ambiente = os.getenv("FLASK_DEBUG", "false").lower() == "true"
-
-Talisman(
-    app,
-    force_https=False,
-    strict_transport_security=False,
-    content_security_policy=None,
-    referrer_policy="strict-origin-when-cross-origin"
-)
-
-origens = [
-    origem.strip()
-    for origem in os.getenv(
-        "CORS_ORIGINS",
-        "http://127.0.0.1:5500,http://localhost:5500,"
-        "http://127.0.0.1:3000,http://localhost:3000"
-    ).split(",")
-    if origem.strip()
+INSTITUICOES_DEMO = [
+    {
+        "nome": "Centro Esperança",
+        "bairro": "Boa Vista",
+        "necessidades": [
+            "Alimentos", "Roupas", "Produtos de higiene"
+        ],
+    },
+    {
+        "nome": "Casa de Apoio Solidário",
+        "bairro": "Santo Amaro",
+        "necessidades": [
+            "Alimentos", "Produtos de higiene"
+        ],
+    },
+    {
+        "nome": "Instituto Novos Caminhos",
+        "bairro": "Imbiribeira",
+        "necessidades": [
+            "Materiais escolares", "Roupas"
+        ],
+    },
+    {
+        "nome": "Rede Mãos Amigas",
+        "bairro": "Cordeiro",
+        "necessidades": [
+            "Alimentos", "Roupas", "Produtos de higiene"
+        ],
+    },
+    {
+        "nome": "Espaço Recomeçar",
+        "bairro": "Boa Viagem",
+        "necessidades": [
+            "Materiais escolares", "Produtos de higiene"
+        ],
+    },
+    {
+        "nome": "Projeto Viver Melhor",
+        "bairro": "Casa Amarela",
+        "necessidades": [
+            "Alimentos", "Materiais escolares"
+        ],
+    },
 ]
 
-CORS(
-    app,
-    resources={
-        r"/*": {
-            "origins": origens,
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"],
-            "max_age": 3600
-        }
+
+class Instituicao(db.Model):
+    __tablename__ = "doacao_instituicoes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False, unique=True)
+    bairro = db.Column(db.String(100), nullable=False)
+    ativa = db.Column(db.Boolean, nullable=False, default=True)
+
+    necessidades = db.relationship(
+        "Necessidade",
+        backref="instituicao",
+        cascade="all, delete-orphan",
+        lazy=True,
+    )
+
+
+class Necessidade(db.Model):
+    __tablename__ = "doacao_necessidades"
+
+    id = db.Column(db.Integer, primary_key=True)
+    instituicao_id = db.Column(
+        db.Integer,
+        db.ForeignKey("doacao_instituicoes.id"),
+        nullable=False,
+    )
+    categoria = db.Column(db.String(100), nullable=False)
+    ativa = db.Column(db.Boolean, nullable=False, default=True)
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "instituicao_id",
+            "categoria",
+            name="uq_instituicao_categoria",
+        ),
+    )
+
+
+class Doacao(db.Model):
+    __tablename__ = "doacoes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    protocolo = db.Column(
+        db.String(40),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+    token_consulta = db.Column(
+        db.String(100),
+        nullable=False,
+        unique=True,
+    )
+
+    instituicao_id = db.Column(
+        db.Integer,
+        db.ForeignKey("doacao_instituicoes.id"),
+        nullable=False,
+    )
+
+    nome_doador = db.Column(db.String(120), nullable=False)
+    telefone = db.Column(db.String(11), nullable=False)
+    categoria = db.Column(db.String(100), nullable=False)
+    descricao = db.Column(db.String(1000), nullable=False)
+    quantidade = db.Column(db.String(100), nullable=False)
+    observacoes = db.Column(db.String(500))
+
+    entrega = db.Column(db.String(20), nullable=False)
+    endereco_coleta = db.Column(db.JSON, nullable=True)
+
+    status = db.Column(
+        db.String(30),
+        nullable=False,
+        default="pendente",
+    )
+
+    criado_em = db.Column(
+        db.DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    instituicao = db.relationship("Instituicao")
+
+
+def texto(valor, limite):
+    if not isinstance(valor, str):
+        return ""
+    return valor.strip()[:limite]
+
+
+def somente_digitos(valor):
+    return re.sub(r"\D", "", str(valor or ""))
+
+
+def serializar_instituicao(instituicao):
+    return {
+        "id": instituicao.id,
+        "nome": instituicao.nome,
+        "bairro": instituicao.bairro,
+        "necessidades": [
+            necessidade.categoria
+            for necessidade in instituicao.necessidades
+            if necessidade.ativa
+        ],
     }
-)
-
-limiter = Limiter(
-    key_func=get_remote_address,
-    app=app,
-    default_limits=["200 per hour", "50 per minute"],
-    storage_uri="memory://"
-)
-
-usuario_model = Usuario()
-instituicao_model = Instituicao()
 
 
-# AUTENTICAÇÃO
+def validar_doacao(dados):
+    if not isinstance(dados, dict):
+        return None, "Envie um objeto JSON válido."
 
-def autenticar(funcao):
-    @wraps(funcao)
-    def wrapper(*args, **kwargs):
-        autorizacao = request.headers.get("Authorization", "")
-        partes = autorizacao.split()
+    try:
+        instituicao_id = int(dados.get("instituicao_id"))
+    except (TypeError, ValueError):
+        return None, "Instituição inválida."
 
-        if len(partes) != 2 or partes[0].lower() != "bearer":
-            return jsonify({"erro": "Token não fornecido"}), 401
+    instituicao = db.session.get(Instituicao, instituicao_id)
 
-        verificacao = usuario_model.verificar_token(partes[1])
+    if not instituicao or not instituicao.ativa:
+        return None, "Instituição não encontrada."
 
-        if "erro" in verificacao:
-            return jsonify(verificacao), 401
+    nome = texto(dados.get("nome"), 120)
+    telefone = somente_digitos(dados.get("telefone"))
+    categoria = texto(dados.get("categoria"), 100)
+    descricao = texto(dados.get("descricao"), 1000)
+    quantidade = texto(dados.get("quantidade"), 100)
+    observacoes = texto(dados.get("observacoes"), 500)
+    entrega = dados.get("entrega")
 
-        usuario_id = verificacao.get("user_id")
-        instituicao_id = verificacao.get("instituicao_id")
+    if not all([nome, categoria, descricao, quantidade]):
+        return None, "Preencha os campos obrigatórios."
+
+    if len(telefone) != 11:
+        return None, "Informe um celular com DDD e 11 dígitos."
+
+    categorias_aceitas = {
+        necessidade.categoria
+        for necessidade in instituicao.necessidades
+        if necessidade.ativa
+    }
+
+    if categoria not in categorias_aceitas:
+        return None, "A instituição não aceita esta categoria."
+
+    if entrega not in ("direct", "pickup"):
+        return None, "Forma de entrega inválida."
+
+    endereco = None
+
+    if entrega == "pickup":
+        endereco_recebido = dados.get("endereco_coleta")
+
+        if not isinstance(endereco_recebido, dict):
+            return None, "Informe o endereço de coleta."
+
+        endereco = {
+            "cep": somente_digitos(endereco_recebido.get("cep")),
+            "bairro": texto(endereco_recebido.get("bairro"), 100),
+            "rua": texto(endereco_recebido.get("rua"), 150),
+            "numero": texto(endereco_recebido.get("numero"), 20),
+            "referencia": texto(
+                endereco_recebido.get("referencia"), 150
+            ),
+        }
 
         if (
-            type(usuario_id) is not int
-            or type(instituicao_id) is not int
+            len(endereco["cep"]) != 8
+            or not endereco["bairro"]
+            or not endereco["rua"]
+            or not endereco["numero"]
         ):
-            return jsonify({"erro": "Token inválido"}), 401
+            return None, "Endereço de coleta incompleto."
 
-        usuarios = usuario_model.db.executar(
-            """
-            SELECT id, instituicao_id
-            FROM usuarios
-            WHERE id = :id AND ativo = TRUE
-            """,
-            {"id": usuario_id}
+    return {
+        "instituicao_id": instituicao.id,
+        "nome_doador": nome,
+        "telefone": telefone,
+        "categoria": categoria,
+        "descricao": descricao,
+        "quantidade": quantidade,
+        "observacoes": observacoes,
+        "entrega": entrega,
+        "endereco_coleta": endereco,
+    }, None
+
+
+def criar_app():
+    app = Flask(__name__)
+
+    database_url = os.getenv("DATABASE_URL", "")
+
+    if not database_url:
+        raise RuntimeError("Configure DATABASE_URL no arquivo .env.")
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024
+
+    db.init_app(app)
+
+    CORS(
+        app,
+        resources={
+            r"/api/*": {
+                "origins": [
+                    os.getenv(
+                        "FRONTEND_ORIGIN",
+                        "http://127.0.0.1:5500",
+                    )
+                ]
+            }
+        },
+    )
+
+    @app.get("/api/health")
+    def health():
+        return jsonify({"status": "ok"})
+
+    @app.get("/api/instituicoes")
+    def listar_instituicoes():
+        instituicoes = Instituicao.query.filter_by(
+            ativa=True
+        ).order_by(Instituicao.nome).all()
+
+        return jsonify([
+            serializar_instituicao(item)
+            for item in instituicoes
+        ])
+
+    @app.post("/api/doacoes")
+    def criar_doacao():
+        dados = request.get_json(silent=True)
+        validado, erro = validar_doacao(dados)
+
+        if erro:
+            return jsonify({"erro": erro}), 400
+
+        protocolo = (
+            "ABR-"
+            + datetime.now(timezone.utc).strftime("%Y%m%d")
+            + "-"
+            + secrets.token_hex(5).upper()
         )
 
-        if not usuarios:
-            return jsonify({"erro": "Usuário não autorizado"}), 401
+        token = secrets.token_urlsafe(32)
 
-        usuario = usuarios[0]
+        doacao = Doacao(
+            protocolo=protocolo,
+            token_consulta=token,
+            **validado,
+        )
 
-        if usuario["instituicao_id"] != instituicao_id:
-            return jsonify({"erro": "Token inválido"}), 401
-
-        g.usuario = usuario
-
-        return funcao(*args, **kwargs)
-
-    return wrapper
-
-
-def verificar_instituicao(funcao):
-    @wraps(funcao)
-    @autenticar
-    def wrapper(id, *args, **kwargs):
-        if g.usuario["instituicao_id"] != id:
+        try:
+            db.session.add(doacao)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
             return jsonify({
-                "erro": "Você não tem permissão para esta instituição"
-            }), 403
+                "erro": "Não foi possível registrar a doação."
+            }), 409
 
-        if not instituicao_model.buscar_por_id(id):
-            return jsonify({"erro": "Instituição não encontrada"}), 404
+        return jsonify({
+            "mensagem": "Solicitação registrada com sucesso.",
+            "protocolo": doacao.protocolo,
+            "token_consulta": token,
+            "status": doacao.status,
+        }), 201
 
-        return funcao(id, *args, **kwargs)
+    @app.get("/api/doacoes/<protocolo>")
+    def consultar_doacao(protocolo):
+        token = request.headers.get("X-Consulta-Token", "")
 
-    return wrapper
+        doacao = Doacao.query.filter_by(
+            protocolo=protocolo,
+        ).first()
 
-
-def obter_json():
-    if not request.is_json:
-        return None
-
-    dados = request.get_json(silent=True)
-
-    return dados if isinstance(dados, dict) else None
-
-
-def responder(resultado, sucesso=200):
-    if "erro" in resultado:
-        mensagem = resultado["erro"]
-
-        if mensagem in (
-            "Instituição não encontrada",
-            "Usuário não encontrado"
+        if (
+            not doacao
+            or not token
+            or not secrets.compare_digest(
+                token, doacao.token_consulta
+            )
         ):
-            return jsonify(resultado), 404
+            return jsonify({
+                "erro": "Solicitação não encontrada."
+            }), 404
 
-        return jsonify(resultado), 400
+        return jsonify({
+            "protocolo": doacao.protocolo,
+            "instituicao": doacao.instituicao.nome,
+            "categoria": doacao.categoria,
+            "status": doacao.status,
+            "criado_em": doacao.criado_em.isoformat(),
+        })
 
-    return jsonify(resultado), sucesso
+    return app
 
 
-# LOGIN
+app = criar_app()
 
-@app.post("/login")
-@limiter.limit("5 per minute")
-def login():
-    dados = obter_json()
 
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
+@app.cli.command("init-db")
+def inicializar_banco():
+    with app.app_context():
+        db.create_all()
 
-    resultado = usuario_model.login(
-        dados.get("email"),
-        dados.get("senha"),
-        get_remote_address()
-    )
+        if Instituicao.query.count() == 0:
+            for item in INSTITUICOES_DEMO:
+                instituicao = Instituicao(
+                    nome=item["nome"],
+                    bairro=item["bairro"],
+                )
 
-    if "erro" in resultado:
-        return jsonify(resultado), 401
+                for categoria in item["necessidades"]:
+                    instituicao.necessidades.append(
+                        Necessidade(categoria=categoria)
+                    )
 
-    return jsonify(resultado), 200
+                db.session.add(instituicao)
 
+            db.session.commit()
 
-# USUÁRIOS
+        print("Banco inicializado com sucesso.")
 
-@app.post("/usuarios")
-@limiter.limit("10 per hour")
-@autenticar
-def criar_usuario():
-    dados = obter_json()
-
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
-
-    instituicao_id = g.usuario["instituicao_id"]
-
-    resultado = usuario_model.criar(
-        dados.get("nome"),
-        dados.get("email"),
-        dados.get("senha"),
-        instituicao_id
-    )
-
-    return responder(resultado, 201)
-
-
-# INSTITUIÇÕES
-
-@app.get("/instituicoes")
-def listar_instituicoes():
-    return jsonify(instituicao_model.listar_todas())
-
-
-@app.get("/instituicoes/<int:id>")
-def buscar_instituicao(id):
-    resultado = instituicao_model.buscar_por_id(id)
-
-    if not resultado:
-        return jsonify({"erro": "Instituição não encontrada"}), 404
-
-    return jsonify(resultado)
-
-
-@app.post("/instituicoes")
-@limiter.limit("20 per hour")
-@autenticar
-def criar_instituicao():
-    return jsonify({
-        "erro": (
-            "Cadastro de instituições indisponível nesta rota. "
-            "É necessária autorização administrativa."
-        )
-    }), 403
-
-
-@app.put("/instituicoes/<int:id>")
-@limiter.limit("20 per hour")
-@verificar_instituicao
-def atualizar_instituicao(id):
-    dados = obter_json()
-
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
-
-    resultado = instituicao_model.atualizar(
-        id,
-        dados.get("nome"),
-        dados.get("descricao"),
-        dados.get("endereco"),
-        dados.get("latitude"),
-        dados.get("longitude"),
-        dados.get("telefone"),
-        dados.get("email"),
-        dados.get("como_ajudar")
-    )
-
-    return responder(resultado)
-
-
-@app.delete("/instituicoes/<int:id>")
-@limiter.limit("10 per hour")
-@verificar_instituicao
-def deletar_instituicao(id):
-    resultado = instituicao_model.deletar(id)
-    return responder(resultado)
-
-
-# SERVIÇOS
-
-@app.get("/instituicoes/<int:id>/servicos")
-def listar_servicos(id):
-    if not instituicao_model.buscar_por_id(id):
-        return jsonify({"erro": "Instituição não encontrada"}), 404
-
-    return jsonify(instituicao_model.listar_servicos(id))
-
-
-@app.post("/instituicoes/<int:id>/servicos")
-@limiter.limit("30 per hour")
-@verificar_instituicao
-def adicionar_servico(id):
-    dados = obter_json()
-
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
-
-    resultado = instituicao_model.adicionar_servico(
-        id,
-        dados.get("tipo"),
-        dados.get("descricao")
-    )
-
-    return responder(resultado, 201)
-
-
-# NECESSIDADES
-
-@app.get("/instituicoes/<int:id>/necessidades")
-def listar_necessidades(id):
-    if not instituicao_model.buscar_por_id(id):
-        return jsonify({"erro": "Instituição não encontrada"}), 404
-
-    return jsonify(instituicao_model.listar_necessidades(id))
-
-
-@app.post("/instituicoes/<int:id>/necessidades")
-@limiter.limit("30 per hour")
-@verificar_instituicao
-def adicionar_necessidade(id):
-    dados = obter_json()
-
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
-
-    resultado = instituicao_model.adicionar_necessidade(
-        id,
-        dados.get("item"),
-        dados.get("descricao"),
-        dados.get("urgencia", "media")
-    )
-
-    return responder(resultado, 201)
-
-
-# HORÁRIOS
-
-@app.get("/instituicoes/<int:id>/horarios")
-def listar_horarios(id):
-    if not instituicao_model.buscar_por_id(id):
-        return jsonify({"erro": "Instituição não encontrada"}), 404
-
-    horarios = instituicao_model.listar_horarios(id)
-
-    for horario in horarios:
-        for campo in ("horario_abertura", "horario_fechamento"):
-            valor = horario.get(campo)
-
-            if hasattr(valor, "strftime"):
-                horario[campo] = valor.strftime("%H:%M")
-
-    return jsonify(horarios)
-
-
-@app.post("/instituicoes/<int:id>/horarios")
-@limiter.limit("30 per hour")
-@verificar_instituicao
-def adicionar_horario(id):
-    dados = obter_json()
-
-    if dados is None:
-        return jsonify({"erro": "Envie um JSON válido"}), 400
-
-    resultado = instituicao_model.adicionar_horario(
-        id,
-        dados.get("dia_semana"),
-        dados.get("abertura"),
-        dados.get("fechamento")
-    )
-
-    return responder(resultado, 201)
-
-
-# TRATAMENTO DE ERROS
-
-@app.errorhandler(HTTPException)
-def tratar_erro_http(erro):
-    mensagens = {
-        400: "Requisição inválida",
-        404: "Recurso não encontrado",
-        405: "Método não permitido",
-        413: "Dados enviados são muito grandes (máx. 1 MB)",
-        429: "Muitas requisições. Aguarde alguns minutos"
-    }
-
-    mensagem = mensagens.get(erro.code, erro.description)
-
-    return jsonify({"erro": mensagem}), erro.code
-
-
-@app.errorhandler(IntegrityError)
-def tratar_integridade(erro):
-    app.logger.warning("Violação de integridade no banco de dados")
-
-    return jsonify({
-        "erro": "Não foi possível concluir a operação devido a um conflito de dados"
-    }), 409
-
-
-@app.errorhandler(SQLAlchemyError)
-def tratar_banco(erro):
-    app.logger.exception("Erro de banco de dados")
-
-    return jsonify({
-        "erro": "Erro ao acessar o banco de dados"
-    }), 500
-
-
-@app.errorhandler(Exception)
-def tratar_erro(erro):
-    app.logger.exception("Erro interno")
-
-    return jsonify({"erro": "Erro interno do servidor"}), 500
-
-
-# INICIAR SERVIDOR
 
 if __name__ == "__main__":
     app.run(
         host="127.0.0.1",
-        port=5000,
-        debug=ambiente
+        port=int(os.getenv("PORT", "5000")),
+        debug=False,
     )
