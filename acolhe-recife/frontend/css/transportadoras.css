@@ -1,0 +1,202 @@
+.transportadoras-hero {
+  padding: 75px 5%;
+  text-align: center;
+  background: linear-gradient(135deg, #eaf4ff, #f4f9ff);
+}
+
+.transportadoras-hero h1 {
+  color: var(--primary-dark);
+  font-size: clamp(30px, 4vw, 44px);
+  margin-bottom: 15px;
+}
+
+.transportadoras-hero p {
+  max-width: 680px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.transportadoras-section {
+  width: min(1100px, 92%);
+  margin: 65px auto 80px;
+}
+
+.transportadoras-heading {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.transportadoras-heading h2 {
+  color: var(--primary-dark);
+  font-size: 27px;
+  margin-bottom: 10px;
+}
+
+.transportadoras-heading p {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.transportadoras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 25px;
+}
+
+.transportadora-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.transportadora-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(7, 26, 69, 0.1);
+}
+
+.transportadora-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 155px;
+  background: linear-gradient(135deg, #dceeff, #eaf4ff);
+  color: var(--primary);
+  font-size: 55px;
+}
+
+.transportadora-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 28px;
+}
+
+.transportadora-tag {
+  align-self: flex-start;
+  padding: 6px 12px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.transportadora-info h3 {
+  color: var(--primary-dark);
+  font-size: 21px;
+  margin-bottom: 12px;
+}
+
+.transportadora-info > p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.transportadora-details {
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.transportadora-details p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.transportadora-details i {
+  width: 18px;
+  color: var(--primary);
+}
+
+.transportadora-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.transportadora-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 45px;
+  padding: 12px 18px;
+  margin-top: auto;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.transportadora-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.transportadora-actions .transportadora-button {
+  flex: 1;
+}
+
+.transportadora-button-outline {
+  background: var(--white);
+  color: var(--primary);
+}
+
+.transportadora-button-outline:hover {
+  background: var(--primary-light);
+}
+
+.transportadoras-notice {
+  margin-top: 30px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .transportadoras-hero {
+    padding: 55px 5%;
+  }
+
+  .transportadoras-section {
+    margin: 45px auto 60px;
+  }
+
+  .transportadoras-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transportadora-info {
+    padding: 22px;
+  }
+
+  .transportadora-icon {
+    height: 125px;
+    font-size: 45px;
+  }
+}
+
+@media (max-width: 400px) {
+  .transportadora-actions {
+    flex-direction: column;
+  }
+}
