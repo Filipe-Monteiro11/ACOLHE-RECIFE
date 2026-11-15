@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Quero ajudar | ABRICIFE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quero Ajudar | ABRICIFE</title>
 
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/quero-ajudar.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <script src="../js/catalogo.js" defer></script>
+  <script src="../js/quero-ajudar.js" defer></script>
 </head>
 <body>
   <header class="header">
@@ -18,9 +18,14 @@
         <img src="../assets/img/logo.png" alt="ABRICIFE">
       </a>
 
-      <button class="menu-toggle" id="menu-toggle"
-        type="button" aria-label="Abrir menu"
-        aria-expanded="false" aria-controls="menu">
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
         <i class="fa-solid fa-bars"></i>
       </button>
 
@@ -29,64 +34,374 @@
         <a href="preciso-ajuda.html">Preciso de ajuda</a>
         <a href="quero-ajudar.html" class="active" aria-current="page">Quero ajudar</a>
         <a href="instituicoes.html">Instituições</a>
-        <a href="sobre.html">Sobre o projeto</a>
         <a href="transportadoras.html">Transportadoras</a>
+        <a href="sobre.html">Sobre o projeto</a>
       </nav>
 
       <a href="login.html" class="btn-instituicao">
+        <i class="fa-solid fa-building-columns"></i>
         Área da instituição
       </a>
     </div>
   </header>
 
   <main>
-    <section class="page-hero">
-      <span class="section-label">SOLIDARIEDADE</span>
+    <section class="donation-hero">
+      <span class="section-label">FAÇA A DIFERENÇA</span>
       <h1>Quero ajudar</h1>
-      <p>Conheça organizações e confira diretamente com elas como contribuir.</p>
+      <p>
+        Escolha uma instituição, informe o que deseja doar e organize
+        a entrega. Sua solidariedade pode transformar vidas.
+      </p>
     </section>
 
-    <section class="detail">
-      <h2>Como contribuir com responsabilidade</h2>
+    <section class="donation-section" id="formulario-doacao">
+      <div class="donation-heading">
+        <h2>Faça sua doação</h2>
+        <p>Preencha as etapas abaixo para organizar sua contribuição.</p>
+      </div>
 
-      <p>
-        Escolha uma organização, confira suas orientações oficiais
-        e entre em contato antes de enviar qualquer item.
+      <div class="donation-container">
+        <div class="donation-progress">
+          <div class="progress-item active" data-step="1">
+            <span>1</span>
+            <p>Instituição</p>
+          </div>
+
+          <div class="progress-item" data-step="2">
+            <span>2</span>
+            <p>Doação</p>
+          </div>
+
+          <div class="progress-item" data-step="3">
+            <span>3</span>
+            <p>Entrega</p>
+          </div>
+
+          <div class="progress-item" data-step="4">
+            <span>4</span>
+            <p>Confirmação</p>
+          </div>
+        </div>
+
+        <form id="donation-form" novalidate>
+          <div class="form-step active" data-step="1">
+            <div class="step-heading">
+              <h3>Escolha a instituição</h3>
+              <p>Selecione a instituição que deseja ajudar.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="institution">Instituição *</label>
+              <select id="institution" name="institution" required>
+                <option value="">Selecione uma instituição</option>
+              </select>
+            </div>
+
+            <div id="institution-details" class="institution-details" hidden>
+              <div class="institution-details-header">
+                <i class="fa-solid fa-building-columns"></i>
+                <div>
+                  <h4 id="institution-name"></h4>
+                  <p id="institution-location"></p>
+                </div>
+              </div>
+
+              <h4>O que esta instituição está aceitando?</h4>
+              <div id="accepted-donations" class="accepted-donations"></div>
+
+              <p class="institution-note">
+                As necessidades exibidas são demonstrativas e deverão
+                ser confirmadas com cada instituição.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-step" data-step="2">
+            <div class="step-heading">
+              <h3>Informações da doação</h3>
+              <p>Informe seus dados e os itens que deseja doar.</p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="donor-name">Nome completo *</label>
+                <input
+                  type="text"
+                  id="donor-name"
+                  name="donorName"
+                  placeholder="Digite seu nome"
+                  autocomplete="name"
+                  maxlength="120"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="donor-phone">WhatsApp *</label>
+                <input
+                  type="tel"
+                  id="donor-phone"
+                  name="donorPhone"
+                  placeholder="(81) 99999-9999"
+                  autocomplete="tel"
+                  inputmode="numeric"
+                  maxlength="15"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="donation-type">Tipo de doação *</label>
+                <select id="donation-type" name="donationType" required>
+                  <option value="">Selecione o tipo</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="donation-quantity">Quantidade aproximada *</label>
+                <input
+                  type="text"
+                  id="donation-quantity"
+                  name="donationQuantity"
+                  placeholder="Ex.: 10 unidades ou 5 kg"
+                  maxlength="100"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="donation-description">Descreva os itens *</label>
+              <textarea
+                id="donation-description"
+                name="donationDescription"
+                rows="4"
+                maxlength="1000"
+                placeholder="Ex.: 5 kg de arroz, 3 pacotes de feijão e 2 litros de óleo."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="donation-observations">Observações (opcional)</label>
+              <textarea
+                id="donation-observations"
+                name="donationObservations"
+                rows="3"
+                maxlength="500"
+                placeholder="Informações adicionais sobre os itens."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-step" data-step="3">
+            <div class="step-heading">
+              <h3>Como deseja entregar?</h3>
+              <p>Escolha a forma de entrega mais adequada.</p>
+            </div>
+
+            <div class="delivery-options">
+              <label class="delivery-card selected">
+                <input
+                  type="radio"
+                  name="deliveryMethod"
+                  value="direct"
+                  checked
+                >
+                <i class="fa-solid fa-building-columns"></i>
+                <strong>Entrega direta</strong>
+                <span>Levarei os itens até a instituição.</span>
+              </label>
+
+              <label class="delivery-card">
+                <input
+                  type="radio"
+                  name="deliveryMethod"
+                  value="pickup"
+                >
+                <i class="fa-solid fa-truck-fast"></i>
+                <strong>Solicitar coleta</strong>
+                <span>Desejo solicitar transporte para minha doação.</span>
+              </label>
+            </div>
+
+            <div id="direct-delivery" class="delivery-details">
+              <h4>Entrega na instituição</h4>
+              <p>
+                Combine previamente com a instituição o endereço,
+                a data e o horário de recebimento.
+              </p>
+              <p id="direct-institution-name" class="delivery-institution"></p>
+            </div>
+
+            <div id="pickup-delivery" class="delivery-details" hidden>
+              <h4>Endereço para coleta</h4>
+              <p>
+                Preencha o local onde os itens poderão ser retirados.
+                A coleta dependerá da disponibilidade de uma transportadora.
+              </p>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="pickup-cep">CEP *</label>
+                  <input
+                    type="text"
+                    id="pickup-cep"
+                    placeholder="00000-000"
+                    inputmode="numeric"
+                    maxlength="9"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="pickup-neighborhood">Bairro *</label>
+                  <input
+                    type="text"
+                    id="pickup-neighborhood"
+                    placeholder="Seu bairro"
+                    maxlength="100"
+                  >
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="pickup-street">Rua / Avenida *</label>
+                  <input
+                    type="text"
+                    id="pickup-street"
+                    placeholder="Nome da rua"
+                    maxlength="150"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="pickup-number">Número *</label>
+                  <input
+                    type="text"
+                    id="pickup-number"
+                    placeholder="Número ou S/N"
+                    maxlength="20"
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pickup-reference">Complemento / referência</label>
+                <input
+                  type="text"
+                  id="pickup-reference"
+                  placeholder="Ex.: próximo à praça"
+                  maxlength="150"
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-step" data-step="4">
+            <div class="step-heading">
+              <h3>Revise sua doação</h3>
+              <p>Confira as informações antes de confirmar.</p>
+            </div>
+
+            <div id="donation-summary" class="donation-summary"></div>
+
+            <label class="confirmation-checkbox">
+              <input type="checkbox" id="donation-consent">
+              <span>
+                Confirmo que as informações estão corretas e concordo
+                em fornecer os dados informados para organizar
+                minha solicitação de doação demonstrativa.
+              </span>
+            </label>
+          </div>
+
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              id="previous-step"
+              class="btn-previous"
+              hidden
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+              Voltar
+            </button>
+
+            <button type="button" id="next-step" class="btn-next">
+              Continuar
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+            <button
+              type="submit"
+              id="submit-donation"
+              class="btn-next"
+              hidden
+            >
+              <i class="fa-solid fa-check"></i>
+              Confirmar demonstração
+            </button>
+          </div>
+        </form>
+
+        <div id="donation-success" class="donation-success" hidden>
+          <div class="success-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <h3>Formulário concluído!</h3>
+          <p>
+            Sua doação foi preparada nesta demonstração.
+            Nenhuma solicitação foi enviada à instituição
+            ou a uma transportadora.
+          </p>
+
+          <div id="success-summary" class="success-summary"></div>
+
+          <button type="button" id="new-donation" class="btn-next">
+            Fazer outra doação
+          </button>
+        </div>
+      </div>
+
+      <p class="donation-disclaimer">
+        <i class="fa-solid fa-circle-info"></i>
+        Protótipo acadêmico: as necessidades são ilustrativas,
+        não há envio de dados nem agendamento real de coleta.
       </p>
-
-      <p>
-        O ABRICIFE ainda não recebe pagamentos, agenda coletas
-        ou registra doações. Serviços públicos de atendimento
-        não devem ser tratados automaticamente como pontos de coleta.
-      </p>
-
-      <a href="instituicoes.html" class="btn-primary">
-        Conhecer instituições
-      </a>
     </section>
   </main>
 
   <footer class="footer">
     <div class="footer-content">
-      <div>
-        <h3>ABRICIFE</h3>
-        <p>Conectando pessoas a informações sobre a rede de apoio no Recife.</p>
+      <div class="footer-brand">
+        <img src="../assets/img/logo.png" alt="ABRICIFE">
+        <p>Acolhimento que aproxima. Ajuda que transforma.</p>
       </div>
 
       <div class="footer-links">
-        <h3>Navegação</h3>
+        <h3>Links rápidos</h3>
         <a href="index.html">Início</a>
+        <a href="preciso-ajuda.html">Preciso de ajuda</a>
+        <a href="quero-ajudar.html">Quero ajudar</a>
         <a href="instituicoes.html">Instituições</a>
-        <a href="sobre.html">Sobre</a>
+        <a href="transportadoras.html">Transportadoras</a>
       </div>
 
       <div>
-        <h3>Informação responsável</h3>
-        <p>Catálogo informativo. Confirme antes de doar.</p>
+        <h3>Sobre o projeto</h3>
+        <p>Projeto acadêmico de apoio e informação social no Recife.</p>
       </div>
     </div>
 
-    <p class="copyright">ABRICIFE — Projeto acadêmico</p>
+    <div class="copyright">
+      © 2026 ABRICIFE — Projeto acadêmico
+    </div>
   </footer>
 </body>
 </html>
