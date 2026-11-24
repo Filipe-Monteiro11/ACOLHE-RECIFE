@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Instituições | ABRICIFE</title>
 
   <link rel="stylesheet" href="../css/style.css">
@@ -12,23 +13,35 @@
   <script src="../js/dados.js" defer></script>
   <script src="../js/catalogo.js" defer></script>
 </head>
+
 <body>
+
   <header class="header">
     <div class="header-container">
+
       <a href="index.html" class="logo">
         <img src="../assets/img/logo.png" alt="ABRICIFE">
       </a>
 
-      <button class="menu-toggle" id="menu-toggle"
-        type="button" aria-label="Abrir menu"
-        aria-expanded="false" aria-controls="menu">
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
         <i class="fa-solid fa-bars"></i>
       </button>
 
       <nav class="menu" id="menu">
         <a href="index.html">Início</a>
         <a href="quero-ajudar.html">Quero ajudar</a>
-        <a href="instituicoes.html" class="active" aria-current="page">Instituições</a>
+
+        <a href="instituicoes.html" class="active" aria-current="page">
+          Instituições
+        </a>
+
         <a href="transportadoras.html">Transportadoras</a>
       </nav>
 
@@ -36,23 +49,45 @@
         <i class="fa-solid fa-building-columns"></i>
         Área da instituição
       </a>
+
     </div>
   </header>
 
   <main>
-    <section class="page-hero">
-      <span class="section-label">REDE DE APOIO</span>
-      <h1>Instituições no Recife</h1>
-      <p>Encontre organizações e serviços públicos de atendimento à população em situação de vulnerabilidade.</p>
+
+    <section class="page-hero institutions-hero">
+      <div class="page-hero-content">
+
+        <span class="section-label">REDE DE APOIO</span>
+
+        <h1>Instituições no Recife</h1>
+
+        <p>
+          Encontre organizações e serviços públicos de atendimento
+          à população em situação de vulnerabilidade.
+        </p>
+
+        <a href="#instituicoes" class="page-hero-button">
+          <i class="fa-solid fa-building-columns"></i>
+          Conhecer instituições
+        </a>
+
+      </div>
     </section>
 
     <section class="institutions" id="instituicoes">
+
       <form class="search-form catalog-search" id="search-form">
+
         <div class="input-search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="search" id="search-name"
+
+          <input
+            type="search"
+            id="search-name"
             placeholder="Nome da instituição"
-            aria-label="Nome da instituição">
+            aria-label="Nome da instituição"
+          >
         </div>
 
         <select id="search-region" aria-label="Filtrar por bairro">
@@ -67,9 +102,15 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           Buscar
         </button>
+
       </form>
 
-      <p id="search-feedback" class="search-feedback" role="status"></p>
+      <p
+        id="search-feedback"
+        class="search-feedback"
+        role="status"
+      ></p>
+
       <div id="lista-instituicoes" class="institution-list"></div>
 
       <p class="notice">
@@ -78,11 +119,14 @@
         disponibilidade imediata ou aceitação de doações.
         Confirme as informações diretamente com os responsáveis.
       </p>
+
     </section>
+
   </main>
 
   <footer class="footer">
     <div class="footer-content">
+
       <div class="footer-brand">
         <img src="../assets/img/logo.png" alt="ABRICIFE">
         <p>Acolhimento que aproxima. Ajuda que transforma.</p>
@@ -90,19 +134,27 @@
 
       <div class="footer-links">
         <h3>Links rápidos</h3>
+
         <a href="index.html">Início</a>
-        <a href="preciso-ajuda.html">Preciso de ajuda</a>
         <a href="quero-ajudar.html">Quero ajudar</a>
         <a href="instituicoes.html">Instituições</a>
+        <a href="transportadoras.html">Transportadoras</a>
       </div>
 
       <div>
         <h3>Sobre o projeto</h3>
-        <p>Projeto acadêmico de apoio e informação social no Recife.</p>
+
+        <p>
+          Projeto acadêmico de apoio e informação social no Recife.
+        </p>
       </div>
+
     </div>
 
-    <div class="copyright">© 2026 ABRICIFE — Projeto acadêmico</div>
+    <div class="copyright">
+      © 2026 ABRICIFE — Projeto acadêmico
+    </div>
   </footer>
+
 </body>
 </html>

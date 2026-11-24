@@ -1,7 +1,4 @@
-
-/* ========================================
-   IDENTIDADE VISUAL
-======================================== */
+/* IDENTIDADE VISUAL */
 
 .transportadoras-hero,
 .transportadoras-section {
@@ -16,34 +13,47 @@
   --trans-radius: 12px;
 }
 
-/* ========================================
-   BANNER
-======================================== */
+/* BANNER */
 
 .transportadoras-hero {
   position: relative;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
 
-  min-height: 300px;
-  padding: 65px 5%;
-  text-align: center;
+  min-height: 420px;
+  padding: 65px max(4%, calc((100% - 1400px) / 2));
 
-  background: linear-gradient(
-    135deg,
-    #071d36 0%,
-    #102e50 55%,
-    #193c60 100%
-  );
+  background-color: var(--trans-bg);
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(7, 29, 54, 0.80) 0%,
+      rgba(7, 29, 54, 0.55) 30%,
+      rgba(7, 29, 54, 0.15) 60%,
+      transparent 100%
+    ),
+    url("../assets/img/transportadora.jpeg");
+
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
 
   border-bottom: 1px solid var(--trans-border);
+}
+
+.transportadoras-hero-content {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
 }
 
 .transportadoras-hero .section-label {
   display: inline-block;
   margin-bottom: 16px;
+
   color: var(--trans-accent);
   font-size: 12px;
   font-weight: 700;
@@ -52,29 +62,62 @@
 }
 
 .transportadoras-hero h1 {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+
   color: var(--trans-white);
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(34px, 4vw, 52px);
   font-weight: 700;
   line-height: 1.15;
-  letter-spacing: -1.2px;
+  letter-spacing: -1.3px;
 }
 
 .transportadoras-hero p {
-  max-width: 680px;
-  margin: 0 auto;
+  max-width: 520px;
+
   color: #dce8f5;
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 17px;
+  line-height: 1.75;
 }
 
-/* ========================================
-   SEÇÃO PRINCIPAL
-======================================== */
+.transportadoras-hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 49px;
+  margin-top: 26px;
+  padding: 13px 24px;
+
+  background: var(--trans-white);
+  border: 1px solid var(--trans-white);
+  border-radius: 8px;
+
+  color: var(--trans-bg);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.transportadoras-hero-button:hover {
+  background: #dce8f5;
+  border-color: #dce8f5;
+}
+
+/* SEÇÃO PRINCIPAL */
+
+#transportadoras {
+  scroll-margin-top: 30px;
+}
 
 .transportadoras-section {
   width: min(1100px, 92%);
   margin: 60px auto 80px;
+
   color: var(--trans-text);
 }
 
@@ -85,6 +128,7 @@
 
 .transportadoras-heading h2 {
   margin-bottom: 10px;
+
   color: var(--trans-white);
   font-size: clamp(24px, 3vw, 30px);
   font-weight: 700;
@@ -103,9 +147,7 @@
   gap: 25px;
 }
 
-/* ========================================
-   CARDS
-======================================== */
+/* CARDS */
 
 .transportadora-card {
   display: flex;
@@ -118,8 +160,10 @@
 
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
 
-  transition: transform 0.2s,
-    border-color 0.2s, background 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .transportadora-card:hover {
@@ -128,12 +172,11 @@
   background: #16395d;
 }
 
-/* ========================================
-   ÍCONE E IMAGEM
-======================================== */
+/* ÍCONES */
 
 .transportadora-icon {
   position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,6 +191,7 @@
   );
 
   border-bottom: 1px solid var(--trans-border);
+
   color: var(--trans-accent);
   font-size: 46px;
 }
@@ -174,33 +218,34 @@
   font-size: 35px;
 }
 
-/* ========================================
-   INFORMAÇÕES
-======================================== */
+/* INFORMAÇÕES */
 
 .transportadora-info {
   display: flex;
   flex-direction: column;
   flex: 1;
+
   padding: 28px;
 }
 
 .transportadora-tag {
   align-self: flex-start;
+
   padding: 6px 11px;
   margin-bottom: 15px;
 
   border: 1px solid var(--trans-border);
   border-radius: 6px;
   background: var(--trans-secondary);
-  color: #dce8f5;
 
+  color: #dce8f5;
   font-size: 11px;
   font-weight: 600;
 }
 
 .transportadora-info h3 {
   margin-bottom: 12px;
+
   color: var(--trans-white);
   font-size: 22px;
   font-weight: 700;
@@ -209,18 +254,18 @@
 
 .transportadora-info > p {
   margin-bottom: 22px;
+
   color: var(--trans-muted);
   font-size: 14px;
   line-height: 1.75;
 }
 
-/* ========================================
-   INFORMAÇÕES DE CONTATO
-======================================== */
+/* CONTATOS */
 
 .transportadora-details {
   padding-top: 20px;
   margin-bottom: 22px;
+
   border-top: 1px solid var(--trans-border);
 }
 
@@ -230,6 +275,7 @@
   gap: 11px;
 
   margin-bottom: 13px;
+
   color: var(--trans-muted);
   font-size: 13px;
   line-height: 1.6;
@@ -243,6 +289,7 @@
 .transportadora-details i {
   width: 18px;
   flex-shrink: 0;
+
   color: var(--trans-accent);
   text-align: center;
 }
@@ -261,13 +308,12 @@
   text-decoration: underline;
 }
 
-/* ========================================
-   BOTÕES
-======================================== */
+/* BOTÕES */
 
 .transportadora-actions {
   display: flex;
   gap: 12px;
+
   margin-top: auto;
 }
 
@@ -284,15 +330,17 @@
   border: 1px solid var(--trans-white);
   border-radius: 8px;
   background: var(--trans-white);
-  color: var(--trans-bg);
 
+  color: var(--trans-bg);
   font-size: 14px;
   font-weight: 700;
   text-align: center;
   text-decoration: none;
 
-  transition: background 0.2s,
-    border-color 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .transportadora-button:hover {
@@ -317,14 +365,13 @@
   color: var(--trans-white);
 }
 
-.transportadora-button:focus-visible {
+.transportadora-button:focus-visible,
+.transportadoras-hero-button:focus-visible {
   outline: 3px solid var(--trans-accent);
   outline-offset: 3px;
 }
 
-/* ========================================
-   AVISO
-======================================== */
+/* AVISO */
 
 .transportadoras-notice {
   margin-top: 30px;
@@ -349,11 +396,19 @@
   color: var(--trans-white);
 }
 
-/* ========================================
-   RESPONSIVIDADE — TABLET
-======================================== */
+/* RESPONSIVIDADE — TABLET */
 
 @media (max-width: 900px) {
+  .transportadoras-hero {
+    min-height: 380px;
+    padding: 55px 5%;
+    background-position: 65% center;
+  }
+
+  .transportadoras-hero-content {
+    max-width: 500px;
+  }
+
   .transportadoras-section {
     width: 92%;
   }
@@ -372,23 +427,40 @@
   }
 }
 
-/* ========================================
-   RESPONSIVIDADE — CELULAR
-======================================== */
+/* RESPONSIVIDADE — CELULAR */
 
 @media (max-width: 700px) {
   .transportadoras-hero {
-    min-height: 260px;
-    padding: 50px 6%;
+    min-height: 440px;
+    justify-content: flex-end;
+    padding: 200px 6% 35px;
+
+    background-image:
+      linear-gradient(
+        0deg,
+        #071d36 0%,
+        #071d36 25%,
+        rgba(7, 29, 54, 0.85) 48%,
+        rgba(7, 29, 54, 0.15) 100%
+      ),
+      url("../assets/img/transportadora.jpeg");
+
+    background-size: 100% 100%, auto 290px;
+    background-position: center, right top;
   }
 
   .transportadoras-hero h1 {
+    margin-bottom: 15px;
     font-size: 34px;
     letter-spacing: -0.7px;
   }
 
   .transportadoras-hero p {
     font-size: 15px;
+  }
+
+  .transportadoras-hero-button {
+    margin-top: 22px;
   }
 
   .transportadoras-section {
@@ -445,6 +517,8 @@
     width: 100%;
   }
 }
+
+/* ACESSIBILIDADE */
 
 @media (prefers-reduced-motion: reduce) {
   .transportadoras-hero *,
