@@ -9,7 +9,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://SEU-SERVICO.onrender.com/api/:path*"
+      "destination": "https://acolhe-recife-api.onrender.com/api/:path*"
     }
   ]
 }
