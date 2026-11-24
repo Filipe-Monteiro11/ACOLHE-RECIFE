@@ -1,37 +1,113 @@
+/* =========================
+   BANNER
+========================= */
+
 .donation-hero {
-  padding: 70px 5%;
-  text-align: center;
-  background: linear-gradient(135deg, #eaf4ff, #f4f9ff);
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 420px;
+  padding: 65px 0;
+  background-color: #edf6fc;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(237, 246, 252, 0.98) 0%,
+      rgba(237, 246, 252, 0.85) 20%,
+      rgba(237, 246, 252, 0.35) 40%,
+      rgba(237, 246, 252, 0) 65%
+    ),
+    url("../assets/img/quero-ajudar.png");
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+.donation-hero-container {
+  width: min(1400px, 84%);
+  margin: 0 auto;
+}
+
+.donation-hero-content {
+  max-width: 540px;
+  text-align: left;
+}
+
+.donation-hero .section-label {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .donation-hero h1 {
+  margin: 0 0 22px;
   color: var(--primary-dark);
-  font-size: clamp(32px, 4vw, 46px);
-  margin-bottom: 15px;
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -1px;
 }
 
 .donation-hero p {
-  max-width: 700px;
-  margin: auto;
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.7;
+  max-width: 480px;
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.75;
 }
+
+.donation-hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  margin-top: 28px;
+  padding: 14px 25px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.donation-hero-button:hover {
+  border-color: var(--primary-dark);
+  background: var(--primary-dark);
+  color: var(--white);
+}
+
+.donation-hero-button i {
+  font-size: 16px;
+}
+
+
+/* =========================
+   SEÇÃO DE DOAÇÕES
+========================= */
 
 .donation-section {
   width: min(1000px, 92%);
   margin: 55px auto 75px;
+  scroll-margin-top: 110px;
 }
 
 .donation-heading {
-  text-align: center;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .donation-heading h2 {
+  margin-bottom: 8px;
   color: var(--primary-dark);
   font-size: 28px;
-  margin-bottom: 8px;
 }
 
 .donation-heading p {
@@ -41,11 +117,16 @@
 
 .donation-container {
   padding: 35px;
-  background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: var(--white);
   box-shadow: var(--shadow);
 }
+
+
+/* =========================
+   PROGRESSO DO FORMULÁRIO
+========================= */
 
 .donation-progress {
   display: grid;
@@ -98,8 +179,8 @@
 
 .progress-item.active span,
 .progress-item.completed span {
-  background: var(--primary);
   border-color: var(--primary);
+  background: var(--primary);
   color: var(--white);
 }
 
@@ -111,6 +192,11 @@
 .progress-item.completed::after {
   background: var(--primary);
 }
+
+
+/* =========================
+   ETAPAS DO FORMULÁRIO
+========================= */
 
 .form-step {
   display: none;
@@ -125,14 +211,15 @@
 }
 
 .step-heading h3 {
+  margin-bottom: 8px;
   color: var(--primary-dark);
   font-size: 23px;
-  margin-bottom: 8px;
 }
 
 .step-heading p {
   color: var(--muted);
   font-size: 14px;
+  line-height: 1.6;
 }
 
 .form-row {
@@ -147,16 +234,17 @@
 
 .form-group label {
   display: block;
+  margin-bottom: 9px;
   color: var(--text);
   font-size: 14px;
   font-weight: 700;
-  margin-bottom: 9px;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   display: block;
+  box-sizing: border-box;
   width: 100%;
   min-height: 48px;
   padding: 12px 14px;
@@ -164,14 +252,15 @@
   border-radius: 8px;
   background: var(--white);
   color: var(--text);
+  font-family: inherit;
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group textarea {
-  resize: vertical;
   min-height: 100px;
+  resize: vertical;
 }
 
 .form-group input:focus,
@@ -185,6 +274,11 @@
 .form-group textarea::placeholder {
   color: #8995a8;
 }
+
+
+/* =========================
+   INSTITUIÇÃO SELECIONADA
+========================= */
 
 .institution-details {
   padding: 24px;
@@ -204,6 +298,7 @@
 
 .institution-details-header > i {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 52px;
@@ -215,9 +310,9 @@
 }
 
 .institution-details h4 {
+  margin-bottom: 8px;
   color: var(--primary-dark);
   font-size: 16px;
-  margin-bottom: 8px;
 }
 
 .institution-details-header p {
@@ -252,6 +347,11 @@
   line-height: 1.6;
 }
 
+
+/* =========================
+   OPÇÕES DE ENTREGA
+========================= */
+
 .delivery-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -270,6 +370,10 @@
   background: var(--white);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+}
+
+.delivery-card:hover {
+  border-color: var(--primary);
 }
 
 .delivery-card.selected {
@@ -305,16 +409,20 @@
 }
 
 .delivery-details h4 {
+  margin-bottom: 10px;
   color: var(--primary-dark);
   font-size: 17px;
-  margin-bottom: 10px;
 }
 
 .delivery-details > p {
+  margin-bottom: 15px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.7;
-  margin-bottom: 15px;
+}
+
+.delivery-details .form-group:last-child {
+  margin-bottom: 0;
 }
 
 .delivery-institution {
@@ -322,11 +430,16 @@
   font-weight: 700;
 }
 
+
+/* =========================
+   RESUMO DA DOAÇÃO
+========================= */
+
 .donation-summary {
   overflow: hidden;
+  margin-bottom: 25px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  margin-bottom: 25px;
 }
 
 .summary-row {
@@ -367,9 +480,15 @@
 }
 
 .confirmation-checkbox input {
+  flex-shrink: 0;
   margin-top: 4px;
   accent-color: var(--primary);
 }
+
+
+/* =========================
+   MENSAGENS DE ERRO
+========================= */
 
 .form-error {
   padding: 12px 15px;
@@ -379,7 +498,13 @@
   background: #fff1f1;
   color: #a32626;
   font-size: 13px;
+  line-height: 1.6;
 }
+
+
+/* =========================
+   BOTÕES DO FORMULÁRIO
+========================= */
 
 .form-actions {
   display: flex;
@@ -397,9 +522,11 @@
   min-height: 46px;
   padding: 12px 22px;
   border-radius: 8px;
+  font-family: inherit;
   font-size: 14px;
   font-weight: 700;
-  transition: background 0.2s;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
 }
 
 .btn-previous {
@@ -423,21 +550,39 @@
   background: var(--primary-dark);
 }
 
+.btn-next:disabled,
+.btn-previous:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.donation-hero-button:focus-visible,
+.btn-next:focus-visible,
+.btn-previous:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+}
+
+
+/* =========================
+   CONFIRMAÇÃO DE SUCESSO
+========================= */
+
 .donation-success {
   padding: 25px 10px;
   text-align: center;
 }
 
 .success-icon {
+  margin-bottom: 20px;
   color: #16834c;
   font-size: 65px;
-  margin-bottom: 20px;
 }
 
 .donation-success h3 {
+  margin-bottom: 12px;
   color: var(--primary-dark);
   font-size: 26px;
-  margin-bottom: 12px;
 }
 
 .donation-success > p {
@@ -451,7 +596,15 @@
 .success-summary {
   max-width: 600px;
   margin: 0 auto 25px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
   text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.success-summary .summary-row strong {
+  color: var(--primary-dark);
 }
 
 .donation-success .btn-next {
@@ -462,26 +615,131 @@
   margin-top: 20px;
   color: var(--muted);
   font-size: 13px;
-  text-align: center;
   line-height: 1.7;
+  text-align: center;
 }
 
 .donation-disclaimer i {
-  color: var(--primary);
   margin-right: 5px;
+  color: var(--primary);
 }
 
 [hidden] {
   display: none !important;
 }
 
-@media (max-width: 700px) {
+
+/* =========================
+   RESPONSIVIDADE - TABLET
+========================= */
+
+@media (max-width: 1024px) {
+
   .donation-hero {
-    padding: 55px 5%;
+    min-height: 380px;
+    padding: 55px 0;
+    background-position: 65% center;
+    background-image:
+      linear-gradient(
+        90deg,
+        rgba(237, 246, 252, 0.98) 0%,
+        rgba(237, 246, 252, 0.90) 25%,
+        rgba(237, 246, 252, 0.45) 55%,
+        rgba(237, 246, 252, 0) 100%
+      ),
+      url("../assets/img/quero-ajudar.png");
+  }
+
+  .donation-hero-container {
+    width: 90%;
+  }
+
+  .donation-hero-content {
+    max-width: 440px;
+  }
+
+  .donation-hero h1 {
+    font-size: 44px;
+  }
+
+  .donation-hero p {
+    max-width: 400px;
+    font-size: 16px;
+  }
+
+}
+
+
+/* =========================
+   RESPONSIVIDADE - CELULAR
+========================= */
+
+@media (max-width: 700px) {
+
+  .donation-hero {
+    min-height: 460px;
+    align-items: flex-end;
+    padding: 200px 0 35px;
+    background-color: #edf6fc;
+    background-image:
+      linear-gradient(
+        0deg,
+        #edf6fc 0%,
+        #edf6fc 35%,
+        rgba(237, 246, 252, 0.85) 48%,
+        rgba(237, 246, 252, 0) 75%
+      ),
+      url("../assets/img/quero-ajudar.png");
+    background-size: 100% 100%, auto 290px;
+    background-position: center, right top;
+    background-repeat: no-repeat;
+  }
+
+  .donation-hero-container {
+    width: 90%;
+  }
+
+  .donation-hero-content {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .donation-hero .section-label {
+    margin-bottom: 12px;
+    font-size: 11px;
+  }
+
+  .donation-hero h1 {
+    margin-bottom: 15px;
+    font-size: 36px;
+    letter-spacing: -0.5px;
+  }
+
+  .donation-hero p {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .donation-hero-button {
+    min-height: 46px;
+    margin-top: 22px;
+    padding: 12px 20px;
+    font-size: 13px;
   }
 
   .donation-section {
     margin: 40px auto 60px;
+    scroll-margin-top: 90px;
+  }
+
+  .donation-heading h2 {
+    font-size: 25px;
+  }
+
+  .donation-heading p {
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .donation-container {
@@ -506,6 +764,10 @@
 
   .progress-item p {
     font-size: 11px;
+  }
+
+  .step-heading h3 {
+    font-size: 21px;
   }
 
   .form-row,
@@ -538,4 +800,17 @@
   .btn-next {
     flex: 1;
   }
+
+  .donation-success {
+    padding: 20px 0;
+  }
+
+  .donation-success h3 {
+    font-size: 23px;
+  }
+
+  .success-icon {
+    font-size: 55px;
+  }
+
 }
