@@ -1,4 +1,14 @@
-const API_URL = "http://127.0.0.1:5000/api";
+
+"use strict";
+
+const AMBIENTE_LOCAL = [
+  "localhost",
+  "127.0.0.1"
+].includes(window.location.hostname);
+
+const API_URL = AMBIENTE_LOCAL
+  ? "http://127.0.0.1:5000/api"
+  : "/api";
 
 const $ = (id) => document.getElementById(id);
 
@@ -9,6 +19,11 @@ const formError = $("form-error");
 
 let instituicoes = [];
 let currentStep = 1;
+let enviando = false;
+let carregando = false;
+
+
+// Menu mobile
 
 const menuToggle = $("menu-toggle");
 const menu = $("menu");
@@ -17,13 +32,77 @@ if (menuToggle && menu) {
   menuToggle.addEventListener("click", () => {
     const aberto = menu.classList.toggle("open");
 
-    menuToggle.setAttribute("aria-expanded", String(aberto));
+    menuToggle.setAttribute(
+      "aria-expanded",
+      String(aberto)
+    );
+
     menuToggle.setAttribute(
       "aria-label",
       aberto ? "Fechar menu" : "Abrir menu"
     );
   });
 }
+
+
+// Comunicação com a API
+
+async function requisicao(endpoint, options = {}) {
+  const controller = new AbortController();
+
+  const timeout = setTimeout(
+    () => controller.abort(),
+    90000
+  );
+
+  try {
+    const resposta = await fetch(
+      `${API_URL}${endpoint}`,
+      {
+        ...options,
+        signal: controller.signal
+      }
+    );
+
+    const resultado = await resposta.json().catch(
+      () => null
+    );
+
+    if (!resposta.ok) {
+      throw new Error(
+        resultado?.erro ||
+        "Servidor temporariamente indisponível."
+      );
+    }
+
+    if (resultado === null) {
+      throw new Error("Resposta inválida do servidor.");
+    }
+
+    return resultado;
+
+  } catch (erro) {
+    if (erro.name === "AbortError") {
+      throw new Error(
+        "O servidor demorou para responder."
+      );
+    }
+
+    if (erro instanceof TypeError) {
+      throw new Error(
+        "Não foi possível conectar ao servidor."
+      );
+    }
+
+    throw erro;
+
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+
+// Mensagens do formulário
 
 function mostrarErro(mensagem) {
   formError.textContent = mensagem;
@@ -35,6 +114,27 @@ function limparErro() {
   formError.hidden = true;
 }
 
+function mostrarErroConexao(mensagem) {
+  mostrarErro(`${mensagem} `);
+
+  const botao = document.createElement("button");
+
+  botao.type = "button";
+  botao.className = "btn-previous";
+  botao.textContent = "Tentar novamente";
+  botao.style.marginTop = "10px";
+
+  botao.addEventListener(
+    "click",
+    carregarInstituicoes
+  );
+
+  formError.appendChild(botao);
+}
+
+
+// Instituições
+
 function instituicaoAtual() {
   return instituicoes.find(
     (item) => String(item.id) === institutionSelect.value
@@ -44,20 +144,31 @@ function instituicaoAtual() {
 function formaEntrega() {
   return document.querySelector(
     'input[name="deliveryMethod"]:checked'
-  ).value;
+  )?.value || "direct";
 }
 
 async function carregarInstituicoes() {
+  if (carregando) return;
+
+  carregando = true;
+
+  limparErro();
+
   institutionSelect.disabled = true;
+  $("next-step").disabled = true;
+
+  institutionSelect.replaceChildren(
+    new Option("Conectando ao servidor...", "")
+  );
 
   try {
-    const resposta = await fetch(`${API_URL}/instituicoes`);
+    const resultado = await requisicao("/instituicoes");
 
-    if (!resposta.ok) {
-      throw new Error("Não foi possível carregar as instituições.");
+    if (!Array.isArray(resultado)) {
+      throw new Error("Lista de instituições inválida.");
     }
 
-    instituicoes = await resposta.json();
+    instituicoes = resultado;
 
     institutionSelect.replaceChildren(
       new Option("Selecione uma instituição", "")
@@ -70,11 +181,30 @@ async function carregarInstituicoes() {
     });
 
     institutionSelect.disabled = false;
+
+    if (!instituicoes.length) {
+      mostrarErro(
+        "Nenhuma instituição disponível no momento."
+      );
+    } else {
+      $("next-step").disabled = false;
+    }
+
     atualizarInstituicao();
+
   } catch (erro) {
-    mostrarErro(
-      "Não foi possível conectar ao servidor. Verifique se a API está funcionando."
+    instituicoes = [];
+
+    institutionSelect.replaceChildren(
+      new Option("Instituições indisponíveis", "")
     );
+
+    atualizarInstituicao();
+
+    mostrarErroConexao(erro.message);
+
+  } finally {
+    carregando = false;
   }
 }
 
@@ -82,6 +212,7 @@ function atualizarInstituicao() {
   const instituicao = instituicaoAtual();
 
   $("institution-details").hidden = !instituicao;
+
   $("accepted-donations").replaceChildren();
 
   donationType.replaceChildren(
@@ -93,14 +224,19 @@ function atualizarInstituicao() {
     return;
   }
 
-  $("institution-name").textContent = instituicao.nome;
+  $("institution-name").textContent =
+    instituicao.nome;
+
   $("institution-location").textContent =
     `${instituicao.bairro}, Recife - PE`;
 
-  $("direct-institution-name").textContent = instituicao.nome;
+  $("direct-institution-name").textContent =
+    instituicao.nome;
 
   instituicao.necessidades.forEach((necessidade) => {
-    donationType.add(new Option(necessidade, necessidade));
+    donationType.add(
+      new Option(necessidade, necessidade)
+    );
 
     const item = document.createElement("span");
     item.className = "accepted-item";
@@ -108,10 +244,17 @@ function atualizarInstituicao() {
     const icone = document.createElement("i");
     icone.className = "fa-solid fa-circle-check";
 
-    item.append(icone, document.createTextNode(necessidade));
+    item.append(
+      icone,
+      document.createTextNode(necessidade)
+    );
+
     $("accepted-donations").appendChild(item);
   });
 }
+
+
+// Forma de entrega
 
 function atualizarEntrega() {
   const coleta = formaEntrega() === "pickup";
@@ -119,7 +262,9 @@ function atualizarEntrega() {
   $("direct-delivery").hidden = coleta;
   $("pickup-delivery").hidden = !coleta;
 
-  document.querySelectorAll(".delivery-card").forEach((card) => {
+  document.querySelectorAll(
+    ".delivery-card"
+  ).forEach((card) => {
     card.classList.toggle(
       "selected",
       card.querySelector("input").checked
@@ -127,22 +272,37 @@ function atualizarEntrega() {
   });
 }
 
+
+// Controle das etapas
+
 function mostrarEtapa(etapa) {
   currentStep = etapa;
+
   limparErro();
 
-  document.querySelectorAll(".form-step").forEach((item) => {
+  document.querySelectorAll(
+    ".form-step"
+  ).forEach((item) => {
     item.classList.toggle(
       "active",
       Number(item.dataset.step) === etapa
     );
   });
 
-  document.querySelectorAll(".progress-item").forEach((item) => {
+  document.querySelectorAll(
+    ".progress-item"
+  ).forEach((item) => {
     const numero = Number(item.dataset.step);
 
-    item.classList.toggle("active", numero === etapa);
-    item.classList.toggle("completed", numero < etapa);
+    item.classList.toggle(
+      "active",
+      numero === etapa
+    );
+
+    item.classList.toggle(
+      "completed",
+      numero < etapa
+    );
   });
 
   $("previous-step").hidden = etapa === 1;
@@ -154,11 +314,18 @@ function mostrarEtapa(etapa) {
   }
 }
 
+
+// Validação
+
 function validarCampos(campos) {
   for (const campo of campos) {
     if (!campo.value.trim()) {
-      mostrarErro("Preencha todos os campos obrigatórios.");
+      mostrarErro(
+        "Preencha todos os campos obrigatórios."
+      );
+
       campo.focus();
+
       return false;
     }
   }
@@ -166,22 +333,27 @@ function validarCampos(campos) {
   return true;
 }
 
-function validarEtapa() {
+function validarEtapa(etapa = currentStep) {
   limparErro();
 
-  if (currentStep === 1) {
-    if (!instituicaoAtual()) {
+  const instituicao = instituicaoAtual();
+
+  if (etapa === 1) {
+    if (!instituicao) {
       mostrarErro("Selecione uma instituição.");
       return false;
     }
 
-    if (!instituicaoAtual().necessidades.length) {
-      mostrarErro("Esta instituição não possui necessidades disponíveis.");
+    if (!instituicao.necessidades.length) {
+      mostrarErro(
+        "Esta instituição não possui necessidades disponíveis."
+      );
+
       return false;
     }
   }
 
-  if (currentStep === 2) {
+  if (etapa === 2) {
     if (!validarCampos([
       $("donor-name"),
       $("donor-phone"),
@@ -192,22 +364,31 @@ function validarEtapa() {
       return false;
     }
 
-    const telefone = $("donor-phone").value.replace(/\D/g, "");
+    const telefone = $("donor-phone")
+      .value.replace(/\D/g, "");
 
     if (telefone.length !== 11) {
-      mostrarErro("Informe um celular com DDD e 11 dígitos.");
+      mostrarErro(
+        "Informe um celular com DDD e 11 dígitos."
+      );
+
+      $("donor-phone").focus();
+
       return false;
     }
 
-    if (!instituicaoAtual().necessidades.includes(
+    if (!instituicao?.necessidades.includes(
       donationType.value
     )) {
-      mostrarErro("Tipo de doação não aceito pela instituição.");
+      mostrarErro(
+        "Tipo de doação não aceito pela instituição."
+      );
+
       return false;
     }
   }
 
-  if (currentStep === 3 && formaEntrega() === "pickup") {
+  if (etapa === 3 && formaEntrega() === "pickup") {
     if (!validarCampos([
       $("pickup-cep"),
       $("pickup-neighborhood"),
@@ -217,8 +398,14 @@ function validarEtapa() {
       return false;
     }
 
-    if ($("pickup-cep").value.replace(/\D/g, "").length !== 8) {
+    const cep = $("pickup-cep")
+      .value.replace(/\D/g, "");
+
+    if (cep.length !== 8) {
       mostrarErro("Informe um CEP com 8 dígitos.");
+
+      $("pickup-cep").focus();
+
       return false;
     }
   }
@@ -226,27 +413,53 @@ function validarEtapa() {
   return true;
 }
 
+
+// Dados da doação
+
 function dadosDoacao() {
   const coleta = formaEntrega() === "pickup";
 
   return {
     instituicao_id: Number(institutionSelect.value),
+
     nome: $("donor-name").value.trim(),
-    telefone: $("donor-phone").value.replace(/\D/g, ""),
+
+    telefone: $("donor-phone")
+      .value.replace(/\D/g, ""),
+
     categoria: donationType.value,
-    descricao: $("donation-description").value.trim(),
-    quantidade: $("donation-quantity").value.trim(),
-    observacoes: $("donation-observations").value.trim(),
+
+    descricao: $("donation-description")
+      .value.trim(),
+
+    quantidade: $("donation-quantity")
+      .value.trim(),
+
+    observacoes: $("donation-observations")
+      .value.trim(),
+
     entrega: formaEntrega(),
+
     endereco_coleta: coleta ? {
-      cep: $("pickup-cep").value.replace(/\D/g, ""),
-      bairro: $("pickup-neighborhood").value.trim(),
+      cep: $("pickup-cep")
+        .value.replace(/\D/g, ""),
+
+      bairro: $("pickup-neighborhood")
+        .value.trim(),
+
       rua: $("pickup-street").value.trim(),
+
       numero: $("pickup-number").value.trim(),
-      referencia: $("pickup-reference").value.trim()
+
+      referencia: $("pickup-reference")
+        .value.trim()
+
     } : null
   };
 }
+
+
+// Resumo da doação
 
 function criarLinha(titulo, valor) {
   const linha = document.createElement("div");
@@ -267,9 +480,9 @@ function mostrarResumo(container) {
   const dados = dadosDoacao();
 
   const linhas = [
-    ["Instituição", instituicaoAtual().nome],
+    ["Instituição", instituicaoAtual()?.nome || ""],
     ["Doador", dados.nome],
-    ["WhatsApp", dados.telefone],
+    ["WhatsApp", $("donor-phone").value],
     ["Categoria", dados.categoria],
     ["Itens", dados.descricao],
     ["Quantidade", dados.quantidade],
@@ -298,38 +511,62 @@ function mostrarResumo(container) {
   }
 
   container.replaceChildren(
-    ...linhas.map(([titulo, valor]) => criarLinha(titulo, valor))
+    ...linhas.map(
+      ([titulo, valor]) => criarLinha(titulo, valor)
+    )
   );
 }
 
+
+// Navegação
+
 $("next-step").addEventListener("click", () => {
-  if (validarEtapa()) {
+  if (carregando || enviando) return;
+
+  if (currentStep < 4 && validarEtapa()) {
     mostrarEtapa(currentStep + 1);
   }
 });
 
 $("previous-step").addEventListener("click", () => {
+  if (enviando) return;
+
   if (currentStep > 1) {
     mostrarEtapa(currentStep - 1);
   }
 });
 
-institutionSelect.addEventListener("change", atualizarInstituicao);
+institutionSelect.addEventListener("change", () => {
+  limparErro();
+  atualizarInstituicao();
+});
 
 document.querySelectorAll(
   'input[name="deliveryMethod"]'
 ).forEach((radio) => {
-  radio.addEventListener("change", atualizarEntrega);
+  radio.addEventListener(
+    "change",
+    atualizarEntrega
+  );
 });
 
+
+// Máscara de telefone
+
 $("donor-phone").addEventListener("input", (event) => {
-  const digitos = event.target.value.replace(/\D/g, "").slice(0, 11);
+  const digitos = event.target.value
+    .replace(/\D/g, "")
+    .slice(0, 11);
 
   if (digitos.length <= 2) {
-    event.target.value = digitos ? `(${digitos}` : "";
+    event.target.value = digitos
+      ? `(${digitos}`
+      : "";
+
   } else if (digitos.length <= 7) {
     event.target.value =
       `(${digitos.slice(0, 2)}) ${digitos.slice(2)}`;
+
   } else {
     event.target.value =
       `(${digitos.slice(0, 2)}) ` +
@@ -337,45 +574,73 @@ $("donor-phone").addEventListener("input", (event) => {
   }
 });
 
+
+// Máscara de CEP
+
 $("pickup-cep").addEventListener("input", (event) => {
-  const digitos = event.target.value.replace(/\D/g, "").slice(0, 8);
+  const digitos = event.target.value
+    .replace(/\D/g, "")
+    .slice(0, 8);
 
   event.target.value = digitos.length > 5
     ? `${digitos.slice(0, 5)}-${digitos.slice(5)}`
     : digitos;
 });
 
+
+// Confirmação da doação
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (enviando || currentStep !== 4) return;
+
   limparErro();
 
-  if (currentStep !== 4) {
-    return;
+  for (let etapa = 1; etapa <= 3; etapa++) {
+    mostrarEtapa(etapa);
+
+    if (!validarEtapa(etapa)) {
+      return;
+    }
   }
 
+  mostrarEtapa(4);
+
   if (!$("donation-consent").checked) {
-    mostrarErro("Confirme os dados antes de continuar.");
+    mostrarErro(
+      "Confirme os dados antes de continuar."
+    );
+
     return;
   }
 
   const botao = $("submit-donation");
+  const botaoVoltar = $("previous-step");
+
+  enviando = true;
+
   botao.disabled = true;
-  botao.textContent = "Registrando doação...";
+  botaoVoltar.disabled = true;
+
+  botao.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> ' +
+    'Registrando doação...';
 
   try {
-    const resposta = await fetch(`${API_URL}/doacoes`, {
+    const resultado = await requisicao("/doacoes", {
       method: "POST",
+
       headers: {
         "Content-Type": "application/json"
       },
+
       body: JSON.stringify(dadosDoacao())
     });
 
-    const resultado = await resposta.json();
-
-    if (!resposta.ok) {
+    if (!resultado.protocolo || !resultado.token_consulta) {
       throw new Error(
-        resultado.erro || "Não foi possível registrar a doação."
+        "Não foi possível confirmar o registro."
       );
     }
 
@@ -384,54 +649,72 @@ form.addEventListener("submit", async (event) => {
     resumo.replaceChildren(
       criarLinha("Protocolo", resultado.protocolo),
       criarLinha("Status", "Pendente"),
-      criarLinha("Instituição", instituicaoAtual().nome)
+      criarLinha("Instituição", instituicaoAtual().nome),
+      criarLinha("Código de consulta", resultado.token_consulta)
     );
 
-    const consulta = document.createElement("p");
-    consulta.className = "donation-consultation";
-
-    const titulo = document.createElement("strong");
-    titulo.textContent = "Código de consulta: ";
-
-    const codigo = document.createElement("span");
-    codigo.textContent = resultado.token_consulta;
-
-    consulta.append(titulo, codigo);
-    resumo.appendChild(consulta);
-
     const aviso = document.createElement("p");
+
     aviso.textContent =
       "Guarde o protocolo e o código de consulta. " +
-      "Eles serão necessários para acompanhar a solicitação.";
+      "Eles serão necessários para consultar sua solicitação.";
+
+    aviso.style.marginTop = "15px";
+
     resumo.appendChild(aviso);
 
     form.hidden = true;
-    document.querySelector(".donation-progress").hidden = true;
+
+    document.querySelector(
+      ".donation-progress"
+    ).hidden = true;
+
     $("donation-success").hidden = false;
 
-    $("donation-success").querySelector("h3").textContent =
-      "Doação registrada com sucesso!";
+    $("donation-success")
+      .querySelector("h3")
+      .textContent = "Doação registrada com sucesso!";
 
-    $("donation-success").querySelector("h3 + p").textContent =
-      "Sua solicitação foi registrada no sistema. " +
-      "A instituição ainda precisa avaliar a doação. " +
-      "Caso tenha solicitado coleta, o transporte também " +
-      "precisará ser confirmado.";
+    $("donation-success")
+      .querySelector("h3 + p")
+      .textContent =
+        "Sua solicitação foi registrada no sistema. " +
+        "O recebimento e a coleta ainda precisam ser confirmados.";
+
+    $("formulario-doacao").scrollIntoView({
+      behavior: "smooth"
+    });
 
   } catch (erro) {
-    mostrarErro(erro.message);
+    mostrarErro(
+      `${erro.message} Se o envio foi interrompido, ` +
+      "o registro pode ter sido realizado. Evite reenviar " +
+      "imediatamente sem verificar."
+    );
+
   } finally {
+    enviando = false;
+
     botao.disabled = false;
+    botaoVoltar.disabled = false;
+
     botao.innerHTML =
       '<i class="fa-solid fa-check"></i> Confirmar doação';
   }
 });
 
+
+// Nova doação
+
 $("new-donation").addEventListener("click", () => {
   form.reset();
 
   $("donation-success").hidden = true;
-  document.querySelector(".donation-progress").hidden = false;
+
+  document.querySelector(
+    ".donation-progress"
+  ).hidden = false;
+
   form.hidden = false;
 
   atualizarInstituicao();
@@ -443,6 +726,9 @@ $("new-donation").addEventListener("click", () => {
   });
 });
 
-carregarInstituicoes();
-atualizarEntrega();
+
+// Inicialização
+
 mostrarEtapa(1);
+atualizarEntrega();
+carregarInstituicoes();

@@ -1,6 +1,25 @@
-/* =========================
+
+/* ========================================
+   IDENTIDADE VISUAL
+======================================== */
+
+.donation-hero,
+.donation-section {
+  --don-bg: #091d33;
+  --don-primary: #102e50;
+  --don-primary-dark: #07182b;
+  --don-white: #ffffff;
+  --don-surface: #f5f8fc;
+  --don-text: #142b45;
+  --don-muted: #64748b;
+  --don-border: #dce4ed;
+  --don-accent: #a9c7e8;
+  --don-radius: 12px;
+}
+
+/* ========================================
    BANNER
-========================= */
+======================================== */
 
 .donation-hero {
   position: relative;
@@ -8,16 +27,20 @@
   align-items: center;
   min-height: 420px;
   padding: 65px 0;
-  background-color: #edf6fc;
+
+  background-color: var(--don-bg);
   background-image:
     linear-gradient(
       90deg,
-      rgba(237, 246, 252, 0.98) 0%,
-      rgba(237, 246, 252, 0.85) 20%,
-      rgba(237, 246, 252, 0.35) 40%,
-      rgba(237, 246, 252, 0) 65%
+      #091d33 0%,
+      rgba(9, 29, 51, 0.98) 18%,
+      rgba(9, 29, 51, 0.90) 30%,
+      rgba(9, 29, 51, 0.60) 45%,
+      rgba(9, 29, 51, 0.12) 68%,
+      transparent 90%
     ),
     url("../assets/img/quero-ajudar.png");
+
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
@@ -29,33 +52,33 @@
 }
 
 .donation-hero-content {
-  max-width: 540px;
+  max-width: 560px;
   text-align: left;
 }
 
 .donation-hero .section-label {
   display: inline-block;
   margin-bottom: 16px;
-  color: var(--primary);
+  color: var(--don-accent);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
 .donation-hero h1 {
   margin: 0 0 22px;
-  color: var(--primary-dark);
+  color: var(--don-white);
   font-size: clamp(36px, 4vw, 54px);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
 }
 
 .donation-hero p {
-  max-width: 480px;
+  max-width: 490px;
   margin: 0;
-  color: var(--text);
+  color: #dce8f5;
   font-size: 17px;
   line-height: 1.75;
 }
@@ -68,71 +91,91 @@
   min-height: 50px;
   margin-top: 28px;
   padding: 14px 25px;
-  border: 1px solid var(--primary);
+
+  border: 1px solid var(--don-white);
   border-radius: 8px;
-  background: var(--primary);
-  color: var(--white);
+  background: var(--don-white);
+  color: var(--don-bg);
+
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
+
   transition: background 0.2s, border-color 0.2s;
 }
 
 .donation-hero-button:hover {
-  border-color: var(--primary-dark);
-  background: var(--primary-dark);
-  color: var(--white);
+  background: #dce8f5;
+  border-color: #dce8f5;
+  color: var(--don-bg);
 }
 
 .donation-hero-button i {
   font-size: 16px;
 }
 
-
-/* =========================
+/* ========================================
    SEÇÃO DE DOAÇÕES
-========================= */
+======================================== */
 
 .donation-section {
   width: min(1000px, 92%);
-  margin: 55px auto 75px;
+  margin: 60px auto 80px;
   scroll-margin-top: 110px;
 }
 
+.donation-section *,
+.donation-section *::before,
+.donation-section *::after {
+  box-sizing: border-box;
+}
+
 .donation-heading {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
   text-align: center;
 }
 
 .donation-heading h2 {
-  margin-bottom: 8px;
-  color: var(--primary-dark);
-  font-size: 28px;
+  margin: 0 0 12px;
+  color: var(--don-white);
+  font-size: clamp(25px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .donation-heading p {
-  color: var(--muted);
+  margin: 0;
+  color: #b9cce1;
   font-size: 15px;
+  line-height: 1.7;
 }
+
+/* ========================================
+   CONTAINER BRANCO
+======================================== */
 
 .donation-container {
-  padding: 35px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--white);
-  box-shadow: var(--shadow);
+  padding: 36px;
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-white);
+  color: var(--don-text);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.10);
+  color-scheme: light;
 }
 
-
-/* =========================
+/* ========================================
    PROGRESSO DO FORMULÁRIO
-========================= */
+======================================== */
 
 .donation-progress {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 38px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--don-border);
 }
 
 .progress-item {
@@ -140,8 +183,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
-  color: var(--muted);
+  gap: 10px;
+
+  color: var(--don-muted);
   text-align: center;
 }
 
@@ -152,7 +196,7 @@
   left: calc(50% + 28px);
   width: calc(100% - 44px);
   height: 2px;
-  background: var(--border);
+  background: var(--don-border);
 }
 
 .progress-item:last-child::after {
@@ -163,40 +207,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 40px;
   height: 40px;
-  border: 2px solid var(--border);
+
+  border: 1px solid #d3dce7;
   border-radius: 50%;
-  background: var(--white);
+  background: var(--don-surface);
+  color: var(--don-muted);
+
   font-size: 14px;
   font-weight: 700;
 }
 
 .progress-item p {
+  margin: 0;
+  color: var(--don-muted);
   font-size: 13px;
   font-weight: 600;
 }
 
 .progress-item.active span,
 .progress-item.completed span {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: var(--white);
+  border-color: var(--don-primary);
+  background: var(--don-primary);
+  color: var(--don-white);
 }
 
 .progress-item.active p,
 .progress-item.completed p {
-  color: var(--primary);
+  color: var(--don-primary);
+  font-weight: 700;
 }
 
 .progress-item.completed::after {
-  background: var(--primary);
+  background: var(--don-primary);
 }
 
-
-/* =========================
+/* ========================================
    ETAPAS DO FORMULÁRIO
-========================= */
+======================================== */
 
 .form-step {
   display: none;
@@ -211,16 +261,23 @@
 }
 
 .step-heading h3 {
-  margin-bottom: 8px;
-  color: var(--primary-dark);
+  margin: 0 0 8px;
+  color: var(--don-primary-dark);
   font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
 }
 
 .step-heading p {
-  color: var(--muted);
+  margin: 0;
+  color: var(--don-muted);
   font-size: 14px;
   line-height: 1.6;
 }
+
+/* ========================================
+   CAMPOS DO FORMULÁRIO
+======================================== */
 
 .form-row {
   display: grid;
@@ -235,56 +292,74 @@
 .form-group label {
   display: block;
   margin-bottom: 9px;
-  color: var(--text);
+  color: var(--don-text);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.donation-container .form-group input,
+.donation-container .form-group select,
+.donation-container .form-group textarea {
   display: block;
-  box-sizing: border-box;
   width: 100%;
   min-height: 48px;
   padding: 12px 14px;
-  border: 1px solid var(--border);
+
+  border: 1px solid #cfd9e5;
   border-radius: 8px;
-  background: var(--white);
-  color: var(--text);
+  background: var(--don-white);
+  color: var(--don-text);
+  color-scheme: light;
+
   font-family: inherit;
   font-size: 14px;
   outline: none;
+
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group textarea {
-  min-height: 100px;
+.donation-container .form-group select {
+  cursor: pointer;
+}
+
+.donation-container .form-group select option {
+  background: var(--don-white);
+  color: var(--don-text);
+}
+
+.donation-container .form-group textarea {
+  min-height: 110px;
   resize: vertical;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(6, 61, 168, 0.1);
+.donation-container .form-group input:hover,
+.donation-container .form-group select:hover,
+.donation-container .form-group textarea:hover {
+  border-color: #9aafc5;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: #8995a8;
+.donation-container .form-group input:focus,
+.donation-container .form-group select:focus,
+.donation-container .form-group textarea:focus {
+  border-color: var(--don-primary);
+  box-shadow: 0 0 0 3px rgba(16, 46, 80, 0.08);
 }
 
+.donation-container .form-group input::placeholder,
+.donation-container .form-group textarea::placeholder {
+  color: #7b899c;
+}
 
-/* =========================
+/* ========================================
    INSTITUIÇÃO SELECIONADA
-========================= */
+======================================== */
 
 .institution-details {
   padding: 24px;
-  border: 1px solid #d4e4fa;
-  border-radius: 12px;
-  background: #f5faff;
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-surface);
+  color: var(--don-text);
 }
 
 .institution-details-header {
@@ -293,7 +368,7 @@
   gap: 15px;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--don-border);
 }
 
 .institution-details-header > i {
@@ -301,23 +376,27 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+
   width: 52px;
   height: 52px;
-  border-radius: 12px;
-  background: var(--primary-light);
-  color: var(--primary);
+
+  border-radius: 10px;
+  background: #e4edf7;
+  color: var(--don-primary);
   font-size: 22px;
 }
 
 .institution-details h4 {
-  margin-bottom: 8px;
-  color: var(--primary-dark);
+  margin: 0 0 8px;
+  color: var(--don-primary-dark);
   font-size: 16px;
 }
 
 .institution-details-header p {
-  color: var(--muted);
+  margin: 0;
+  color: var(--don-muted);
   font-size: 13px;
+  line-height: 1.6;
 }
 
 .accepted-donations {
@@ -332,25 +411,26 @@
   align-items: center;
   gap: 8px;
   padding: 9px 13px;
-  border: 1px solid #cfe0f7;
-  border-radius: 8px;
-  background: var(--white);
-  color: var(--primary);
+
+  border: 1px solid #d5e1ee;
+  border-radius: 7px;
+  background: var(--don-white);
+  color: var(--don-primary);
+
   font-size: 13px;
   font-weight: 600;
 }
 
 .institution-note {
   margin-top: 20px;
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-
-/* =========================
+/* ========================================
    OPÇÕES DE ENTREGA
-========================= */
+======================================== */
 
 .delivery-options {
   display: grid;
@@ -365,58 +445,63 @@
   align-items: flex-start;
   gap: 12px;
   padding: 25px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  background: var(--white);
+
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-white);
+
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
 
 .delivery-card:hover {
-  border-color: var(--primary);
+  border-color: var(--don-primary);
+  background: var(--don-surface);
 }
 
 .delivery-card.selected {
-  border-color: var(--primary);
-  background: #f5faff;
+  border-color: var(--don-primary);
+  background: #edf3fa;
+  box-shadow: inset 0 0 0 1px var(--don-primary);
 }
 
 .delivery-card input {
-  accent-color: var(--primary);
+  accent-color: var(--don-primary);
 }
 
 .delivery-card > i {
-  color: var(--primary);
+  color: var(--don-primary);
   font-size: 29px;
 }
 
 .delivery-card strong {
-  color: var(--primary-dark);
+  color: var(--don-primary-dark);
   font-size: 16px;
 }
 
 .delivery-card span {
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .delivery-details {
   padding: 25px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: #f8fbff;
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-surface);
+  color: var(--don-text);
 }
 
 .delivery-details h4 {
-  margin-bottom: 10px;
-  color: var(--primary-dark);
+  margin: 0 0 10px;
+  color: var(--don-primary-dark);
   font-size: 17px;
 }
 
 .delivery-details > p {
   margin-bottom: 15px;
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 14px;
   line-height: 1.7;
 }
@@ -426,28 +511,28 @@
 }
 
 .delivery-institution {
-  color: var(--primary) !important;
+  color: var(--don-primary) !important;
   font-weight: 700;
 }
 
-
-/* =========================
+/* ========================================
    RESUMO DA DOAÇÃO
-========================= */
+======================================== */
 
 .donation-summary {
   overflow: hidden;
   margin-bottom: 25px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: 1px solid var(--don-border);
+  border-radius: 10px;
+  background: var(--don-white);
 }
 
 .summary-row {
   display: grid;
   grid-template-columns: 180px 1fr;
   gap: 15px;
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--don-border);
   font-size: 14px;
 }
 
@@ -456,15 +541,15 @@
 }
 
 .summary-row:nth-child(even) {
-  background: #f8fbff;
+  background: var(--don-surface);
 }
 
 .summary-row strong {
-  color: var(--primary-dark);
+  color: var(--don-primary-dark);
 }
 
 .summary-row span {
-  color: var(--muted);
+  color: var(--don-muted);
   overflow-wrap: anywhere;
   white-space: pre-line;
 }
@@ -473,7 +558,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 13px;
   line-height: 1.7;
   cursor: pointer;
@@ -482,35 +567,37 @@
 .confirmation-checkbox input {
   flex-shrink: 0;
   margin-top: 4px;
-  accent-color: var(--primary);
+  accent-color: var(--don-primary);
 }
 
-
-/* =========================
+/* ========================================
    MENSAGENS DE ERRO
-========================= */
+======================================== */
 
 .form-error {
-  padding: 12px 15px;
+  padding: 13px 16px;
   margin-top: 20px;
-  border: 1px solid #f2c3c3;
+
+  border: 1px solid #efc5c5;
   border-radius: 8px;
-  background: #fff1f1;
-  color: #a32626;
+  background: #fff3f3;
+  color: #a12626;
+
   font-size: 13px;
   line-height: 1.6;
 }
 
-
-/* =========================
+/* ========================================
    BOTÕES DO FORMULÁRIO
-========================= */
+======================================== */
 
 .form-actions {
   display: flex;
   justify-content: space-between;
   gap: 15px;
   margin-top: 35px;
+  padding-top: 24px;
+  border-top: 1px solid var(--don-border);
 }
 
 .btn-previous,
@@ -519,54 +606,62 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 46px;
-  padding: 12px 22px;
+  min-height: 48px;
+  padding: 12px 24px;
+
   border-radius: 8px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
+
+  transition: background 0.2s, border-color 0.2s,
+    opacity 0.2s;
 }
 
 .btn-previous {
-  border: 1px solid var(--border);
-  background: var(--white);
-  color: var(--primary);
+  border: 1px solid #cfd9e5;
+  background: var(--don-white);
+  color: var(--don-primary);
 }
 
 .btn-previous:hover {
-  background: var(--primary-light);
+  background: var(--don-surface);
+  border-color: var(--don-primary);
 }
 
 .btn-next {
   margin-left: auto;
-  border: 1px solid var(--primary);
-  background: var(--primary);
-  color: var(--white);
+  border: 1px solid var(--don-primary);
+  background: var(--don-primary);
+  color: var(--don-white);
 }
 
 .btn-next:hover {
-  background: var(--primary-dark);
+  background: var(--don-primary-dark);
+  border-color: var(--don-primary-dark);
+  color: var(--don-white);
 }
 
 .btn-next:disabled,
 .btn-previous:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.donation-hero-button:focus-visible,
-.btn-next:focus-visible,
-.btn-previous:focus-visible {
-  outline: 3px solid var(--primary);
+.donation-hero-button:focus-visible {
+  outline: 3px solid var(--don-accent);
   outline-offset: 4px;
 }
 
+.donation-container :focus-visible {
+  outline: 2px solid var(--don-primary);
+  outline-offset: 3px;
+}
 
-/* =========================
+/* ========================================
    CONFIRMAÇÃO DE SUCESSO
-========================= */
+======================================== */
 
 .donation-success {
   padding: 25px 10px;
@@ -581,14 +676,14 @@
 
 .donation-success h3 {
   margin-bottom: 12px;
-  color: var(--primary-dark);
+  color: var(--don-primary-dark);
   font-size: 26px;
 }
 
 .donation-success > p {
   max-width: 570px;
   margin: 0 auto 25px;
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -596,7 +691,7 @@
 .success-summary {
   max-width: 600px;
   margin: 0 auto 25px;
-  color: var(--muted);
+  color: var(--don-muted);
   font-size: 14px;
   line-height: 1.7;
   text-align: left;
@@ -604,16 +699,20 @@
 }
 
 .success-summary .summary-row strong {
-  color: var(--primary-dark);
+  color: var(--don-primary-dark);
 }
 
 .donation-success .btn-next {
   margin: 0 auto;
 }
 
+/* ========================================
+   AVISO DO PROJETO
+======================================== */
+
 .donation-disclaimer {
-  margin-top: 20px;
-  color: var(--muted);
+  margin-top: 22px;
+  color: #b9cce1;
   font-size: 13px;
   line-height: 1.7;
   text-align: center;
@@ -621,31 +720,30 @@
 
 .donation-disclaimer i {
   margin-right: 5px;
-  color: var(--primary);
+  color: var(--don-accent);
 }
 
-[hidden] {
+.donation-section [hidden] {
   display: none !important;
 }
 
-
-/* =========================
-   RESPONSIVIDADE - TABLET
-========================= */
+/* ========================================
+   RESPONSIVIDADE — TABLET
+======================================== */
 
 @media (max-width: 1024px) {
-
   .donation-hero {
     min-height: 380px;
     padding: 55px 0;
     background-position: 65% center;
+
     background-image:
       linear-gradient(
         90deg,
-        rgba(237, 246, 252, 0.98) 0%,
-        rgba(237, 246, 252, 0.90) 25%,
-        rgba(237, 246, 252, 0.45) 55%,
-        rgba(237, 246, 252, 0) 100%
+        #091d33 0%,
+        rgba(9, 29, 51, 0.94) 25%,
+        rgba(9, 29, 51, 0.55) 60%,
+        rgba(9, 29, 51, 0.15) 100%
       ),
       url("../assets/img/quero-ajudar.png");
   }
@@ -666,33 +764,30 @@
     max-width: 400px;
     font-size: 16px;
   }
-
 }
 
-
-/* =========================
-   RESPONSIVIDADE - CELULAR
-========================= */
+/* ========================================
+   RESPONSIVIDADE — CELULAR
+======================================== */
 
 @media (max-width: 700px) {
-
   .donation-hero {
     min-height: 460px;
     align-items: flex-end;
-    padding: 200px 0 35px;
-    background-color: #edf6fc;
+    padding: 210px 0 35px;
+
     background-image:
       linear-gradient(
         0deg,
-        #edf6fc 0%,
-        #edf6fc 35%,
-        rgba(237, 246, 252, 0.85) 48%,
-        rgba(237, 246, 252, 0) 75%
+        #091d33 0%,
+        #091d33 35%,
+        rgba(9, 29, 51, 0.90) 48%,
+        rgba(9, 29, 51, 0.15) 85%
       ),
       url("../assets/img/quero-ajudar.png");
-    background-size: 100% 100%, auto 290px;
+
+    background-size: 100% 100%, auto 310px;
     background-position: center, right top;
-    background-repeat: no-repeat;
   }
 
   .donation-hero-container {
@@ -701,7 +796,6 @@
 
   .donation-hero-content {
     max-width: 100%;
-    text-align: left;
   }
 
   .donation-hero .section-label {
@@ -733,22 +827,26 @@
     scroll-margin-top: 90px;
   }
 
+  .donation-heading {
+    margin-bottom: 26px;
+  }
+
   .donation-heading h2 {
     font-size: 25px;
   }
 
   .donation-heading p {
     font-size: 14px;
-    line-height: 1.6;
   }
 
   .donation-container {
-    padding: 22px 18px;
+    padding: 24px 18px;
   }
 
   .donation-progress {
     gap: 5px;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
   }
 
   .progress-item span {
@@ -812,5 +910,37 @@
   .success-icon {
     font-size: 55px;
   }
+}
 
+@media (max-width: 400px) {
+  .donation-container {
+    padding: 22px 14px;
+  }
+
+  .progress-item p {
+    font-size: 10px;
+  }
+
+  .progress-item span {
+    width: 30px;
+    height: 30px;
+  }
+
+  .progress-item::after {
+    top: 14px;
+    left: calc(50% + 19px);
+    width: calc(100% - 30px);
+  }
+}
+
+/* ========================================
+   ACESSIBILIDADE
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .donation-hero *,
+  .donation-section * {
+    transition: none !important;
+    animation: none !important;
+  }
 }

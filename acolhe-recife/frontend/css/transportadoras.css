@@ -1,42 +1,100 @@
+
+/* ========================================
+   IDENTIDADE VISUAL
+======================================== */
+
+.transportadoras-hero,
+.transportadoras-section {
+  --trans-bg: #071d36;
+  --trans-surface: #102e50;
+  --trans-secondary: #193c60;
+  --trans-white: #ffffff;
+  --trans-text: #f5f8fc;
+  --trans-muted: #b9cce1;
+  --trans-border: #345473;
+  --trans-accent: #a9c7e8;
+  --trans-radius: 12px;
+}
+
+/* ========================================
+   BANNER
+======================================== */
+
 .transportadoras-hero {
-  padding: 75px 5%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 300px;
+  padding: 65px 5%;
   text-align: center;
-  background: linear-gradient(135deg, #eaf4ff, #f4f9ff);
+
+  background: linear-gradient(
+    135deg,
+    #071d36 0%,
+    #102e50 55%,
+    #193c60 100%
+  );
+
+  border-bottom: 1px solid var(--trans-border);
+}
+
+.transportadoras-hero .section-label {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--trans-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .transportadoras-hero h1 {
-  color: var(--primary-dark);
-  font-size: clamp(30px, 4vw, 44px);
-  margin-bottom: 15px;
+  margin-bottom: 18px;
+  color: var(--trans-white);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -1.2px;
 }
 
 .transportadoras-hero p {
   max-width: 680px;
-  margin: auto;
-  color: var(--muted);
+  margin: 0 auto;
+  color: #dce8f5;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.8;
 }
+
+/* ========================================
+   SEÇÃO PRINCIPAL
+======================================== */
 
 .transportadoras-section {
   width: min(1100px, 92%);
-  margin: 65px auto 80px;
+  margin: 60px auto 80px;
+  color: var(--trans-text);
 }
 
 .transportadoras-heading {
-  text-align: center;
   margin-bottom: 35px;
+  text-align: center;
 }
 
 .transportadoras-heading h2 {
-  color: var(--primary-dark);
-  font-size: 27px;
   margin-bottom: 10px;
+  color: var(--trans-white);
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .transportadoras-heading p {
-  color: var(--muted);
+  color: var(--trans-muted);
   font-size: 15px;
+  line-height: 1.7;
 }
 
 .transportadoras-grid {
@@ -45,31 +103,80 @@
   gap: 25px;
 }
 
+/* ========================================
+   CARDS
+======================================== */
+
 .transportadora-card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: transform 0.2s, box-shadow 0.2s;
+
+  background: var(--trans-surface);
+  border: 1px solid var(--trans-border);
+  border-radius: var(--trans-radius);
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+
+  transition: transform 0.2s,
+    border-color 0.2s, background 0.2s;
 }
 
 .transportadora-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 35px rgba(7, 26, 69, 0.1);
+  transform: translateY(-3px);
+  border-color: #6685a5;
+  background: #16395d;
 }
 
+/* ========================================
+   ÍCONE E IMAGEM
+======================================== */
+
 .transportadora-icon {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+
   height: 155px;
-  background: linear-gradient(135deg, #dceeff, #eaf4ff);
-  color: var(--primary);
-  font-size: 55px;
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    #193c60,
+    #102e50
+  );
+
+  border-bottom: 1px solid var(--trans-border);
+  color: var(--trans-accent);
+  font-size: 46px;
 }
+
+.transportadora-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.transportadora-icon > i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 85px;
+  height: 85px;
+
+  border: 1px solid #52769c;
+  border-radius: 18px;
+  background: rgba(7, 29, 54, 0.45);
+
+  color: var(--trans-white);
+  font-size: 35px;
+}
+
+/* ========================================
+   INFORMAÇÕES
+======================================== */
 
 .transportadora-info {
   display: flex;
@@ -80,47 +187,83 @@
 
 .transportadora-tag {
   align-self: flex-start;
-  padding: 6px 12px;
+  padding: 6px 11px;
   margin-bottom: 15px;
-  border-radius: 20px;
-  background: var(--primary-light);
-  color: var(--primary);
-  font-size: 12px;
-  font-weight: 700;
+
+  border: 1px solid var(--trans-border);
+  border-radius: 6px;
+  background: var(--trans-secondary);
+  color: #dce8f5;
+
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .transportadora-info h3 {
-  color: var(--primary-dark);
-  font-size: 21px;
   margin-bottom: 12px;
+  color: var(--trans-white);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .transportadora-info > p {
-  color: var(--muted);
+  margin-bottom: 22px;
+  color: var(--trans-muted);
   font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 20px;
+  line-height: 1.75;
 }
 
+/* ========================================
+   INFORMAÇÕES DE CONTATO
+======================================== */
+
 .transportadora-details {
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
-  margin-bottom: 20px;
+  padding-top: 20px;
+  margin-bottom: 22px;
+  border-top: 1px solid var(--trans-border);
 }
 
 .transportadora-details p {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--muted);
+  gap: 11px;
+
+  margin-bottom: 13px;
+  color: var(--trans-muted);
   font-size: 13px;
-  margin-bottom: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.transportadora-details p:last-child {
+  margin-bottom: 0;
 }
 
 .transportadora-details i {
   width: 18px;
-  color: var(--primary);
+  flex-shrink: 0;
+  color: var(--trans-accent);
+  text-align: center;
 }
+
+.transportadora-details strong {
+  color: var(--trans-white);
+}
+
+.transportadora-details a {
+  color: var(--trans-text);
+  transition: color 0.2s;
+}
+
+.transportadora-details a:hover {
+  color: var(--trans-accent);
+  text-decoration: underline;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
 
 .transportadora-actions {
   display: flex;
@@ -133,22 +276,29 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 45px;
+
+  min-height: 46px;
   padding: 12px 18px;
   margin-top: auto;
-  border: 1px solid var(--primary);
+
+  border: 1px solid var(--trans-white);
   border-radius: 8px;
-  background: var(--primary);
-  color: var(--white);
+  background: var(--trans-white);
+  color: var(--trans-bg);
+
   font-size: 14px;
   font-weight: 700;
   text-align: center;
-  transition: background 0.2s, transform 0.2s;
+  text-decoration: none;
+
+  transition: background 0.2s,
+    border-color 0.2s, color 0.2s;
 }
 
 .transportadora-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
+  background: #dce8f5;
+  border-color: #dce8f5;
+  color: var(--trans-bg);
 }
 
 .transportadora-actions .transportadora-button {
@@ -156,33 +306,110 @@
 }
 
 .transportadora-button-outline {
-  background: var(--white);
-  color: var(--primary);
+  background: transparent;
+  border-color: #7895b2;
+  color: var(--trans-white);
 }
 
 .transportadora-button-outline:hover {
-  background: var(--primary-light);
+  background: var(--trans-secondary);
+  border-color: var(--trans-accent);
+  color: var(--trans-white);
 }
+
+.transportadora-button:focus-visible {
+  outline: 3px solid var(--trans-accent);
+  outline-offset: 3px;
+}
+
+/* ========================================
+   AVISO
+======================================== */
 
 .transportadoras-notice {
   margin-top: 30px;
-  color: var(--muted);
+  padding: 20px 24px;
+
+  border: 1px solid var(--trans-border);
+  border-radius: 10px;
+  background: rgba(16, 46, 80, 0.5);
+
+  color: var(--trans-muted);
   font-size: 13px;
   text-align: center;
-  line-height: 1.7;
+  line-height: 1.8;
 }
+
+.transportadoras-notice i {
+  margin-right: 6px;
+  color: var(--trans-accent);
+}
+
+.transportadoras-notice strong {
+  color: var(--trans-white);
+}
+
+/* ========================================
+   RESPONSIVIDADE — TABLET
+======================================== */
+
+@media (max-width: 900px) {
+  .transportadoras-section {
+    width: 92%;
+  }
+
+  .transportadoras-grid {
+    gap: 18px;
+  }
+
+  .transportadora-info {
+    padding: 24px;
+  }
+
+  .transportadora-button {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+}
+
+/* ========================================
+   RESPONSIVIDADE — CELULAR
+======================================== */
 
 @media (max-width: 700px) {
   .transportadoras-hero {
-    padding: 55px 5%;
+    min-height: 260px;
+    padding: 50px 6%;
+  }
+
+  .transportadoras-hero h1 {
+    font-size: 34px;
+    letter-spacing: -0.7px;
+  }
+
+  .transportadoras-hero p {
+    font-size: 15px;
   }
 
   .transportadoras-section {
-    margin: 45px auto 60px;
+    margin: 40px auto 60px;
+  }
+
+  .transportadoras-heading {
+    margin-bottom: 26px;
+  }
+
+  .transportadoras-heading h2 {
+    font-size: 25px;
+  }
+
+  .transportadoras-heading p {
+    font-size: 14px;
   }
 
   .transportadoras-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .transportadora-info {
@@ -190,13 +417,39 @@
   }
 
   .transportadora-icon {
-    height: 125px;
-    font-size: 45px;
+    height: 135px;
+  }
+
+  .transportadora-icon > i {
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+
+  .transportadora-info h3 {
+    font-size: 20px;
+  }
+
+  .transportadoras-notice {
+    padding: 18px;
+    margin-top: 25px;
   }
 }
 
 @media (max-width: 400px) {
   .transportadora-actions {
     flex-direction: column;
+  }
+
+  .transportadora-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transportadoras-hero *,
+  .transportadoras-section * {
+    transition: none !important;
+    animation: none !important;
   }
 }

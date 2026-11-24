@@ -1,0 +1,29 @@
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Ambiente virtual Python
+.venv/
+venv/
+env/
+
+# Arquivos Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Editores
+.vscode/
+.idea/
+
+# Hospedagem
+.vercel/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
